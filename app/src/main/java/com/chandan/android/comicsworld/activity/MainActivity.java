@@ -1,13 +1,14 @@
 package com.chandan.android.comicsworld.activity;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +19,7 @@ import com.chandan.android.comicsworld.adapter.ComicsListAdapter;
 import com.chandan.android.comicsworld.model.issues.IssuesData;
 import com.chandan.android.comicsworld.model.issues.IssuesDataResponse;
 import com.chandan.android.comicsworld.utilities.NetworkUtils;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity
 
     private RecyclerView mRecyclerView;
     private ComicsListAdapter mAdapter;
+
+    private KProgressHUD progressIndicator;
 
     private List<IssuesData> issuesDataList = new ArrayList<>();
 
@@ -126,11 +130,13 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         int columnCount = getResources().getInteger(R.integer.list_column_count);
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(staggeredGridLayoutManager);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, columnCount);
+        mRecyclerView.setLayoutManager(layoutManager);
+
+        mRecyclerView.setHasFixedSize(true);
 
         mAdapter = new ComicsListAdapter(this);
-        mAdapter.setHasStableIds(true);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -138,8 +144,34 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
+    public void showProgressIndicator(Context context, String titleLabel, String detailLabel, boolean isCancellable) {
+        if (context == null) {
+            return;
+        }
+
+        progressIndicator = KProgressHUD.create(context)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(isCancellable)
+                .setAnimationSpeed(R.integer.progress_animation_speed)
+                .setDimAmount(R.integer.progress_dimension)
+                .show();
+
+        if (titleLabel != null && !titleLabel.equals("")) {
+            progressIndicator.setLabel(titleLabel);
+        }
+
+        if (detailLabel != null && !detailLabel.equals("")) {
+            progressIndicator.setDetailsLabel(detailLabel);
+        }
+    }
+
+    public void hideProgressIndicator() {
+        progressIndicator.dismiss();
+    }
+
     //Network Calls
     private void getDataFromService() {
+        showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
         NetworkUtils.fetchIssuesData(new Callback<IssuesDataResponse>() {
             @Override
             public void onResponse(Call<IssuesDataResponse> call, Response<IssuesDataResponse> response) {
@@ -149,10 +181,12 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     showErrorMessage(getString(R.string.network_error));
                 }
+                hideProgressIndicator();
             }
 
             @Override
             public void onFailure(Call<IssuesDataResponse> call, Throwable t) {
+                hideProgressIndicator();
                 showErrorMessage(t.getLocalizedMessage());
             }
         });

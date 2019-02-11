@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView cardUseCompatPadding="true"
+<android.support.v7.widget.CardView
+    cardUseCompatPadding="true"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,53 +8,53 @@
     android:clickable="true"
     android:focusable="true">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/content_imageView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/card_view_image_height"
             android:background="@color/divider"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/home_screen_comic_image_desc" />
+            android:scaleType="fitXY"
+            android:contentDescription="@string/home_screen_issues_image_desc" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/content_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_below="@id/content_imageView"
+            android:paddingLeft="@dimen/default_margin"
+            android:paddingRight="@dimen/default_margin"
+            android:paddingTop="@dimen/default_margin"
+            android:textColor="@color/primary_text"
+            android:textSize="@dimen/title_size" />
 
-            <TextView
-                android:id="@+id/content_title"
-                style="@style/TextAppearance.AppCompat.Subhead"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="@integer/title_max_line"
-                android:paddingEnd="@dimen/default_margin"
-                android:paddingLeft="@dimen/default_margin"
-                android:paddingRight="@dimen/default_margin"
-                android:paddingStart="@dimen/default_margin"
-                android:paddingTop="@dimen/default_margin"
-                android:textColor="@color/primary_text"
-                android:textSize="@dimen/title_size" />
+        <TextView
+            android:id="@+id/content_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/content_title"
+            android:paddingBottom="@dimen/default_margin"
+            android:paddingLeft="@dimen/default_margin"
+            android:paddingRight="@dimen/default_margin"
+            android:textSize="@dimen/subtitle_size"
+            android:textColor="@color/subtitle_text"
+            android:textStyle="italic"/>
 
-            <TextView
-                android:id="@+id/content_subtitle"
-                style="@style/TextAppearance.AppCompat.Body1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/default_margin"
-                android:paddingEnd="@dimen/default_margin"
-                android:paddingLeft="@dimen/default_margin"
-                android:paddingRight="@dimen/default_margin"
-                android:paddingStart="@dimen/default_margin"
-                android:textColor="@color/subtitle_text"
-                android:textSize="@dimen/subtitle_size"
-                android:textStyle="italic"/>
-        </LinearLayout>
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/favorite_image"
+            android:layout_width="@dimen/favorite_icon_width"
+            android:layout_height="@dimen/favorite_icon_height"
+            android:contentDescription="@string/home_screen_favorite_icon_desc"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/content_imageView"
+            android:layout_marginTop="@dimen/favorite_icon_top_margin"
+            android:layout_marginEnd="@dimen/favorite_icon_end_margin"
+            android:scaleType="centerCrop"
+            android:src="@drawable/favorite_image_state" />
+
+    </RelativeLayout>
 
 </android.support.v7.widget.CardView>

@@ -22,11 +22,12 @@ public class ImageUtils {
 
     public static void displayImageFromUrlWithPlaceHolder(final Context context, final String url,
                                                           final ImageView imageView,
-                                                          int placeholderResId) {
+                                                          int placeholderResId, int errorResId) {
         RequestOptions myOptions = new RequestOptions()
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                .placeholder(placeholderResId);
+                .placeholder(placeholderResId)
+                .error(errorResId);
 
         Glide.with(context)
                 .load(url)

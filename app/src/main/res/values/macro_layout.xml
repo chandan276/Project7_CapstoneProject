@@ -3,4 +3,8 @@
     <!-- CardView -->
     <integer name="list_column_count">2</integer>
     <integer name="title_max_line">4</integer>
+
+    <!-- Progress Indicatior -->
+    <integer name="progress_animation_speed">2</integer>
+    <item name="progress_dimension" type="integer" format="float">0.5</item>
 </resources>

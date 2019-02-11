@@ -7,15 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.chandan.android.comicsworld.R;
 import com.chandan.android.comicsworld.model.issues.IssuesData;
 import com.chandan.android.comicsworld.utilities.DateUtils;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.chandan.android.comicsworld.utilities.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,52 +60,15 @@ public class ComicsListAdapter extends RecyclerView.Adapter<ComicsListAdapter.Co
         String subTitleText = DateUtils.getFormattedDate(movieModel.getIssuesAddedDate(), "MMM dd, yyyy");
         comicsListHolder.subTitleTextView.setText(subTitleText);
 
-        //ImageUtils.loadImageWithProgress(comicsListHolder.contentImageView, movieModel.getComicImage(), comicsListHolder.progressBar);
+        ImageUtils.displayImageFromUrlWithPlaceHolder(context, movieModel.getComicImage(),
+                comicsListHolder.contentImageView, R.drawable.image_placeholder, R.drawable.error_image_loading);
 
-//        Glide.with(this.)
-//                .load(movieModel.getComicImage())
-//                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                .centerCrop()
-//                .dontAnimate()
-//                .listener(new RequestListener<String, GlideDrawable>() {
-//                    @Override
-//                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-//                        return false;
-//                    }
-//
-//                    @Override
-//                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                        Bitmap bitmap = ((GlideBitmapDrawable) resource.getCurrent()).getBitmap();
-//                        Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
-//                            @Override
-//                            public void onGenerated(Palette palette) {
-//                                int defaultColor = 0xFF333333;
-//                                int color = palette.getDarkVibrantColor(defaultColor);
-//                                comicsListHolder.metaBar.setBackgroundColor(color);
-//                            }
-//                        });
-//
-//
-//                        return false;
-//                    }
-//                })
-//                .into(comicsListHolder.contentImageView);
-
-        Picasso.with(context)
-                .load(movieModel.getComicImage())
-                .placeholder(R.mipmap.ic_launcher)
-                .error(R.mipmap.ic_launcher)
-                .into(comicsListHolder.contentImageView, new Callback() {
-                    @Override
-                    public void onSuccess() {
-
-                    }
-
-                    @Override
-                    public void onError() {
-
-                    }
-                });
+        comicsListHolder.favoriteImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setSelected(!v.isSelected());
+            }
+        });
         comicsListHolder.bind(i);
     }
 
@@ -119,11 +79,10 @@ public class ComicsListAdapter extends RecyclerView.Adapter<ComicsListAdapter.Co
 
     class ComicsListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        LinearLayout metaBar;
         ImageView contentImageView;
         TextView titleTextView;
         TextView subTitleTextView;
-        ProgressBar progressBar;
+        ImageView favoriteImageView;
 
         ComicsListHolder(View itemView) {
             super(itemView);
@@ -131,6 +90,7 @@ public class ComicsListAdapter extends RecyclerView.Adapter<ComicsListAdapter.Co
             contentImageView = (ImageView) itemView.findViewById(R.id.content_imageView);
             titleTextView = (TextView) itemView.findViewById(R.id.content_title);
             subTitleTextView = (TextView) itemView.findViewById(R.id.content_subtitle);
+            favoriteImageView = (ImageView) itemView.findViewById(R.id.favorite_image);
 
             itemView.setOnClickListener(this);
         }

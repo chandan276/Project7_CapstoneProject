@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class ImagesData implements Parcelable {
-    private final static String Image_URL_Tag = "super_url";
+    private final static String Image_URL_Tag = "medium_url";
 
     @SerializedName(Image_URL_Tag)
     private String imageUrl;

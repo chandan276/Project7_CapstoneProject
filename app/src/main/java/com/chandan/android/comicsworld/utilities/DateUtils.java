@@ -33,14 +33,4 @@ public class DateUtils {
     public static String getFormattedDateToday() {
         return getFormattedDate(getTodayDateString(), "MMM d, yyyy");
     }
-
-//    public static Date getDateFromString(String dateStr) {
-//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-//        try {
-//            Date date = format.parse(dateStr);
-//            System.out.println(date);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

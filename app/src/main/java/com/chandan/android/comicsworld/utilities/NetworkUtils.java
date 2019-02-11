@@ -21,12 +21,16 @@ public class NetworkUtils {
 
     private static Retrofit retrofit = null;
 
+    private static void initializeRetrofit() {
+        retrofit = new Retrofit.Builder()
+                .baseUrl(COMIC_VINE_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
     public static void fetchIssuesData(final Callback<IssuesDataResponse> arrayCallback) {
         if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(COMIC_VINE_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+            initializeRetrofit();
         }
         ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
 
@@ -48,10 +52,7 @@ public class NetworkUtils {
 
     public static void fetchVolumesData(final Callback<VolumesDataResponse> arrayCallback) {
         if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(COMIC_VINE_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+            initializeRetrofit();
         }
         ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
 
@@ -73,10 +74,7 @@ public class NetworkUtils {
 
     public static void fetchCharactersData(final Callback<CharactersDataResponse> arrayCallback) {
         if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(COMIC_VINE_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+            initializeRetrofit();
         }
         ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
 
@@ -98,10 +96,7 @@ public class NetworkUtils {
 
     public static void fetchMoviesData(final Callback<MoviesDataResponse> arrayCallback) {
         if (retrofit == null) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(COMIC_VINE_BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+            initializeRetrofit();
         }
         ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
 

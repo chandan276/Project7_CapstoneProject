@@ -7,6 +7,8 @@
 
     <!-- Issues Strings -->
     <string name="issues_drawer_title">Issues</string>
+    <string name="home_screen_issues_image_desc">Comic Image</string>
+    <string name="home_screen_favorite_icon_desc">Favorite Image</string>
 
     <!-- Volumes Strings -->
     <string name="volumes_drawer_title">Volumes</string>
@@ -21,7 +23,10 @@
     <string name="myfavorite_Menu_title">Favorites</string>
     <string name="myfavorite_drawer_title">My Favorites</string>
 
+    <!--Progress Indicator String-->
+    <string name="progress_indicator_home_label">Please wait</string>
+    <string name="progress_indicator_home_detail_label">Downloading data</string>
+
     <!-- Common Strings -->
     <string name="network_error">Cannot fetch result at this time. Please try again later.</string>
-    <string name="home_screen_comic_image_desc">Comic Image</string>
 </resources>
