@@ -2,8 +2,26 @@
     <string name="app_name">Comics World</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Issues Strings -->
+    <string name="issues_drawer_title">Issues</string>
+
+    <!-- Volumes Strings -->
+    <string name="volumes_drawer_title">Volumes</string>
+
+    <!-- Characters Strings -->
+    <string name="characters_drawer_title">Characters</string>
+
+    <!-- Movies Strings -->
+    <string name="movies_drawer_title">Movies</string>
+
+    <!-- My Favorite Strings -->
+    <string name="myfavorite_Menu_title">Favorites</string>
+    <string name="myfavorite_drawer_title">My Favorites</string>
+
+    <!-- Common Strings -->
+    <string name="network_error">Cannot fetch result at this time. Please try again later.</string>
+    <string name="home_screen_comic_image_desc">Comic Image</string>
 </resources>
