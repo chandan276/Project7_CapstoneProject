@@ -23,6 +23,6 @@ public interface ComicVineApiService {
     @GET("characters/")
     Call<CharactersDataResponse> getCharactersData(@Query(DATA_FORMAT) String dataFormat, @Query(PARAM_KEY) String apiKey);
 
-    @GET("videos/")
+    @GET("movies/")
     Call<MoviesDataResponse> getMoviesData(@Query(DATA_FORMAT) String dataFormat, @Query(PARAM_KEY) String apiKey);
 }

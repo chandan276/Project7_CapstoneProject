@@ -16,8 +16,14 @@ import android.widget.Toast;
 
 import com.chandan.android.comicsworld.R;
 import com.chandan.android.comicsworld.adapter.ComicsListAdapter;
+import com.chandan.android.comicsworld.adapter.MoviesListAdapter;
+import com.chandan.android.comicsworld.adapter.VolumesListAdapter;
 import com.chandan.android.comicsworld.model.issues.IssuesData;
 import com.chandan.android.comicsworld.model.issues.IssuesDataResponse;
+import com.chandan.android.comicsworld.model.movies.MoviesData;
+import com.chandan.android.comicsworld.model.movies.MoviesDataResponse;
+import com.chandan.android.comicsworld.model.volumes.VolumesData;
+import com.chandan.android.comicsworld.model.volumes.VolumesDataResponse;
 import com.chandan.android.comicsworld.utilities.NetworkUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
@@ -28,15 +34,29 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+enum ScreenType {
+    ISSUES,
+    VOLUMES,
+    CHARACTERS,
+    MOVIES,
+    FAVORITE
+}
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ComicsListAdapter.ComicsContentClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ComicsListAdapter.ComicsContentClickListener,
+        VolumesListAdapter.VolumesClickListener, MoviesListAdapter.MoviesClickListener {
 
     private RecyclerView mRecyclerView;
-    private ComicsListAdapter mAdapter;
+    private ComicsListAdapter issuesListAdapter;
+    private VolumesListAdapter volumesListAdapter;
+    private MoviesListAdapter moviesListAdapter;
 
     private KProgressHUD progressIndicator;
+    ScreenType screenType = ScreenType.ISSUES;
 
     private List<IssuesData> issuesDataList = new ArrayList<>();
+    private List<VolumesData> volumesDataList = new ArrayList<>();
+    private List<MoviesData> moviesDataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +65,6 @@ public class MainActivity extends AppCompatActivity
 
         setupSideDrawer();
         loadRecyclerView();
-
-        getDataFromService();
     }
 
     @Override
@@ -85,24 +103,31 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_issues:
                 setTitle(R.string.issues_drawer_title);
+                screenType = ScreenType.ISSUES;
                 break;
 
             case R.id.nav_volumes:
                 setTitle(R.string.volumes_drawer_title);
+                screenType = ScreenType.VOLUMES;
                 break;
 
             case R.id.nav_characters:
                 setTitle(R.string.characters_drawer_title);
+                screenType = ScreenType.CHARACTERS;
                 break;
 
             case R.id.nav_movies:
                 setTitle(R.string.movies_drawer_title);
+                screenType = ScreenType.MOVIES;
                 break;
 
             case R.id.nav_favorite:
                 setTitle(R.string.myfavorite_drawer_title);
+                screenType = ScreenType.FAVORITE;
                 break;
         }
+
+        setRespectiveAdapter();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -136,8 +161,35 @@ public class MainActivity extends AppCompatActivity
 
         mRecyclerView.setHasFixedSize(true);
 
-        mAdapter = new ComicsListAdapter(this);
-        mRecyclerView.setAdapter(mAdapter);
+        setRespectiveAdapter();
+    }
+
+    private void setRespectiveAdapter() {
+        switch (screenType) {
+            case ISSUES:
+                issuesListAdapter = new ComicsListAdapter(this);
+                mRecyclerView.setAdapter(issuesListAdapter);
+                getDataForIssues();
+                break;
+
+            case VOLUMES:
+                volumesListAdapter = new VolumesListAdapter(this);
+                mRecyclerView.setAdapter(volumesListAdapter);
+                getDataForVolumes();
+                break;
+
+            case CHARACTERS:
+                break;
+
+            case MOVIES:
+                moviesListAdapter = new MoviesListAdapter(this);
+                mRecyclerView.setAdapter(moviesListAdapter);
+                getDataForMovies();
+                break;
+
+            case FAVORITE:
+                break;
+        }
     }
 
     private void showErrorMessage(String error) {
@@ -170,14 +222,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     //Network Calls
-    private void getDataFromService() {
+    private void getDataForIssues() {
         showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
         NetworkUtils.fetchIssuesData(new Callback<IssuesDataResponse>() {
             @Override
             public void onResponse(Call<IssuesDataResponse> call, Response<IssuesDataResponse> response) {
                 if (response.body() != null) {
                     issuesDataList = response.body().getResults();
-                    mAdapter.updateComicsData(issuesDataList);
+                    issuesListAdapter.updateComicsData(issuesDataList);
                 } else {
                     showErrorMessage(getString(R.string.network_error));
                 }
@@ -192,8 +244,63 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    private void getDataForVolumes() {
+        showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
+        NetworkUtils.fetchVolumesData(new Callback<VolumesDataResponse>() {
+            @Override
+            public void onResponse(Call<VolumesDataResponse> call, Response<VolumesDataResponse> response) {
+                if (response.body() != null) {
+                    volumesDataList = response.body().getResults();
+                    volumesListAdapter.updateVolumesData(volumesDataList);
+                } else {
+                    showErrorMessage(getString(R.string.network_error));
+                }
+                hideProgressIndicator();
+            }
+
+            @Override
+            public void onFailure(Call<VolumesDataResponse> call, Throwable t) {
+                hideProgressIndicator();
+                showErrorMessage(t.getLocalizedMessage());
+            }
+        });
+    }
+
+    private void getDataForMovies() {
+        showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
+        NetworkUtils.fetchMoviesData(new Callback<MoviesDataResponse>() {
+            @Override
+            public void onResponse(Call<MoviesDataResponse> call, Response<MoviesDataResponse> response) {
+                if (response.body() != null) {
+                    moviesDataList = response.body().getResults();
+                    moviesListAdapter.updateVolumesData(moviesDataList);
+                } else {
+                    showErrorMessage(getString(R.string.network_error));
+                }
+                hideProgressIndicator();
+            }
+
+            @Override
+            public void onFailure(Call<MoviesDataResponse> call, Throwable t) {
+                hideProgressIndicator();
+                showErrorMessage(t.getLocalizedMessage());
+            }
+        });
+    }
+
+    //Click Callbacks
     @Override
     public void onComicsContentClick(int clickedItemIndex) {
+
+    }
+
+    @Override
+    public void onVolumesContentClick(int clickedItemIndex) {
+
+    }
+
+    @Override
+    public void onMoviesContentClick(int clickedItemIndex) {
 
     }
 }

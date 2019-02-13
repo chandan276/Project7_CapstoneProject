@@ -12,12 +12,15 @@
 
     <!-- Volumes Strings -->
     <string name="volumes_drawer_title">Volumes</string>
+    <string name="home_screen_volumes_image_desc">Volume Image</string>
 
     <!-- Characters Strings -->
     <string name="characters_drawer_title">Characters</string>
+    <string name="home_screen_characters_image_desc">Character Image</string>
 
-    <!-- Movies Strings -->
+    <!-- Videos Strings -->
     <string name="movies_drawer_title">Movies</string>
+    <string name="home_screen_movies_image_desc">Movie Image</string>
 
     <!-- My Favorite Strings -->
     <string name="myfavorite_Menu_title">Favorites</string>

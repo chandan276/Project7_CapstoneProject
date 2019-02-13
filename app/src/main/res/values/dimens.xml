@@ -8,11 +8,12 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="Drawer_title_text_size">25sp</dimen>
 
-    <!-- Home screen Issues card view -->
+    <!-- Home screen card view -->
     <dimen name="title_padding_bottom">4dp</dimen>
     <dimen name="card_view_image_height">200dp</dimen>
     <dimen name="default_margin">10dp</dimen>
     <dimen name="title_size">16sp</dimen>
+    <dimen name="intermediate_text_size">14sp</dimen>
     <dimen name="subtitle_size">12sp</dimen>
     <dimen name="favorite_icon_width">30dp</dimen>
     <dimen name="favorite_icon_height">30dp</dimen>
