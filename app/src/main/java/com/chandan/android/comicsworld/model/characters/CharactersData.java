@@ -69,6 +69,10 @@ public class CharactersData implements Parcelable {
         }
     };
 
+    public String getCharacterImage() {
+        return this.imagesData.getIconImageUrl();
+    }
+
     public Integer getCharacterId() {
         return characterId;
     }

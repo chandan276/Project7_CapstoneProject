@@ -6,13 +6,34 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 public class ImagesData implements Parcelable {
-    private final static String Image_URL_Tag = "medium_url";
+    private final static String Icon_Image_URL_Tag = "icon_url";
+    private final static String Medium_Image_URL_Tag = "medium_url";
 
-    @SerializedName(Image_URL_Tag)
-    private String imageUrl;
+    @SerializedName(Icon_Image_URL_Tag)
+    private String iconImageUrl;
+
+    @SerializedName(Medium_Image_URL_Tag)
+    private String mediumImageUrl;
+
+    public ImagesData(String iconImageUrl, String mediumImageUrl) {
+        this.iconImageUrl = iconImageUrl;
+        this.mediumImageUrl = mediumImageUrl;
+    }
 
     protected ImagesData(Parcel in) {
-        imageUrl = in.readString();
+        iconImageUrl = in.readString();
+        mediumImageUrl = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(iconImageUrl);
+        dest.writeString(mediumImageUrl);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ImagesData> CREATOR = new Creator<ImagesData>() {
@@ -27,21 +48,19 @@ public class ImagesData implements Parcelable {
         }
     };
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getIconImageUrl() {
+        return iconImageUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setIconImageUrl(String iconImageUrl) {
+        this.iconImageUrl = iconImageUrl;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getMediumImageUrl() {
+        return mediumImageUrl;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(imageUrl);
+    public void setMediumImageUrl(String mediumImageUrl) {
+        this.mediumImageUrl = mediumImageUrl;
     }
 }

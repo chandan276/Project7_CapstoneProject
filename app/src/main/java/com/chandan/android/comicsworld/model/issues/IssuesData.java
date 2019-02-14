@@ -69,7 +69,7 @@ public class IssuesData implements Parcelable {
     };
 
     public String getComicImage() {
-        return this.imagesData.getImageUrl();
+        return this.imagesData.getMediumImageUrl();
     }
 
     public Integer getIssuesId() {

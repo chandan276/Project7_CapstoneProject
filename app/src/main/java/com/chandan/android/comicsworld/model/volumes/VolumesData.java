@@ -112,7 +112,7 @@ public class VolumesData implements Parcelable {
     }
 
     public String getVolumesImage() {
-        return this.imagesData.getImageUrl();
+        return this.imagesData.getMediumImageUrl();
     }
 
     public Integer getVolumesId() {

@@ -59,7 +59,7 @@ public class MoviesData implements Parcelable {
     };
 
     public String getMoviesImage() {
-        return this.imagesData.getImageUrl();
+        return this.imagesData.getMediumImageUrl();
     }
 
     public Integer getMovieId() {

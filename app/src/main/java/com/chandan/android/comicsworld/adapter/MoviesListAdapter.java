@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.chandan.android.comicsworld.R;
 import com.chandan.android.comicsworld.model.movies.MoviesData;
-import com.chandan.android.comicsworld.model.volumes.VolumesData;
 import com.chandan.android.comicsworld.utilities.DateUtils;
 import com.chandan.android.comicsworld.utilities.ImageUtils;
 

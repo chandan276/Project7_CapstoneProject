@@ -19,15 +19,17 @@
         <item
             android:id="@+id/nav_movies"
             android:icon="@drawable/ic_local_movies_black_24dp"
-            android:title="@string/movies_drawer_title"/>
+            android:title="@string/movies_drawer_title" />
     </group>
 
     <item android:title="@string/myfavorite_Menu_title">
         <menu>
-            <item
-                android:id="@+id/nav_favorite"
-                android:icon="@drawable/ic_favorite_black_24dp"
-                android:title="@string/myfavorite_drawer_title" />
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_favorite"
+                    android:icon="@drawable/ic_favorite_black_24dp"
+                    android:title="@string/myfavorite_drawer_title" />
+            </group>
         </menu>
     </item>
 

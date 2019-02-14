@@ -2,7 +2,9 @@ package com.chandan.android.comicsworld.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,9 +17,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.chandan.android.comicsworld.R;
+import com.chandan.android.comicsworld.adapter.CharactersListAdapter;
 import com.chandan.android.comicsworld.adapter.ComicsListAdapter;
 import com.chandan.android.comicsworld.adapter.MoviesListAdapter;
 import com.chandan.android.comicsworld.adapter.VolumesListAdapter;
+import com.chandan.android.comicsworld.model.characters.CharactersData;
+import com.chandan.android.comicsworld.model.characters.CharactersDataResponse;
 import com.chandan.android.comicsworld.model.issues.IssuesData;
 import com.chandan.android.comicsworld.model.issues.IssuesDataResponse;
 import com.chandan.android.comicsworld.model.movies.MoviesData;
@@ -44,12 +49,14 @@ enum ScreenType {
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ComicsListAdapter.ComicsContentClickListener,
-        VolumesListAdapter.VolumesClickListener, MoviesListAdapter.MoviesClickListener {
+        VolumesListAdapter.VolumesClickListener, MoviesListAdapter.MoviesClickListener, CharactersListAdapter.CharacterContentClickListener {
 
     private RecyclerView mRecyclerView;
+
     private ComicsListAdapter issuesListAdapter;
     private VolumesListAdapter volumesListAdapter;
     private MoviesListAdapter moviesListAdapter;
+    private CharactersListAdapter charactersListAdapter;
 
     private KProgressHUD progressIndicator;
     ScreenType screenType = ScreenType.ISSUES;
@@ -57,6 +64,7 @@ public class MainActivity extends AppCompatActivity
     private List<IssuesData> issuesDataList = new ArrayList<>();
     private List<VolumesData> volumesDataList = new ArrayList<>();
     private List<MoviesData> moviesDataList = new ArrayList<>();
+    private List<CharactersData> charactersDataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +72,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         setupSideDrawer();
-        loadRecyclerView();
     }
 
     @Override
@@ -127,7 +134,7 @@ public class MainActivity extends AppCompatActivity
                 break;
         }
 
-        setRespectiveAdapter();
+        loadRecyclerView();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -149,6 +156,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_issues);
         setTitle(R.string.issues_drawer_title);
+        loadRecyclerView();
     }
 
     private void loadRecyclerView() {
@@ -156,8 +164,16 @@ public class MainActivity extends AppCompatActivity
 
         int columnCount = getResources().getInteger(R.integer.list_column_count);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(this, columnCount);
-        mRecyclerView.setLayoutManager(layoutManager);
+        if (screenType == ScreenType.CHARACTERS) {
+            LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+            mRecyclerView.setLayoutManager(layoutManager);
+            DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
+                    layoutManager.getOrientation());
+            mRecyclerView.addItemDecoration(mDividerItemDecoration);
+        } else {
+            GridLayoutManager layoutManager = new GridLayoutManager(this, columnCount);
+            mRecyclerView.setLayoutManager(layoutManager);
+        }
 
         mRecyclerView.setHasFixedSize(true);
 
@@ -179,6 +195,9 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case CHARACTERS:
+                charactersListAdapter = new CharactersListAdapter(this);
+                mRecyclerView.setAdapter(charactersListAdapter);
+                getDataForCharacters();
                 break;
 
             case MOVIES:
@@ -288,6 +307,28 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    private void getDataForCharacters() {
+        showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
+        NetworkUtils.fetchCharactersData(new Callback<CharactersDataResponse>() {
+            @Override
+            public void onResponse(Call<CharactersDataResponse> call, Response<CharactersDataResponse> response) {
+                if (response.body() != null) {
+                    charactersDataList = response.body().getResults();
+                    charactersListAdapter.updateCharactersData(charactersDataList);
+                } else {
+                    showErrorMessage(getString(R.string.network_error));
+                }
+                hideProgressIndicator();
+            }
+
+            @Override
+            public void onFailure(Call<CharactersDataResponse> call, Throwable t) {
+                hideProgressIndicator();
+                showErrorMessage(t.getLocalizedMessage());
+            }
+        });
+    }
+
     //Click Callbacks
     @Override
     public void onComicsContentClick(int clickedItemIndex) {
@@ -301,6 +342,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMoviesContentClick(int clickedItemIndex) {
+
+    }
+
+    @Override
+    public void onCharacterContentClick(int clickedItemIndex) {
 
     }
 }
