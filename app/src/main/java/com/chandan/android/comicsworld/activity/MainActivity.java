@@ -1,6 +1,8 @@
 package com.chandan.android.comicsworld.activity;
 
+import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,6 +13,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -88,14 +91,65 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        // Retrieve the SearchView and plug it into SearchManager
+        MenuItem search = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) search.getActionView();
+        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+        if (searchManager != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        }
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                getSearchResults(query);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                
+                return false;
+            }
+        });
+
         return true;
+    }
+
+    private void getSearchResults(String query) {
+        switch (screenType) {
+            case ISSUES:
+                getDataForIssues(query);
+                break;
+
+            case VOLUMES:
+                getDataForVolumes(query);
+                break;
+
+            case CHARACTERS:
+                getDataForCharacters(query);
+                break;
+
+            case MOVIES:
+                getDataForMovies(query);
+                break;
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
             return true;
         }
 
@@ -185,25 +239,25 @@ public class MainActivity extends AppCompatActivity
             case ISSUES:
                 issuesListAdapter = new ComicsListAdapter(this);
                 mRecyclerView.setAdapter(issuesListAdapter);
-                getDataForIssues();
+                getDataForIssues(null);
                 break;
 
             case VOLUMES:
                 volumesListAdapter = new VolumesListAdapter(this);
                 mRecyclerView.setAdapter(volumesListAdapter);
-                getDataForVolumes();
+                getDataForVolumes(null);
                 break;
 
             case CHARACTERS:
                 charactersListAdapter = new CharactersListAdapter(this);
                 mRecyclerView.setAdapter(charactersListAdapter);
-                getDataForCharacters();
+                getDataForCharacters(null);
                 break;
 
             case MOVIES:
                 moviesListAdapter = new MoviesListAdapter(this);
                 mRecyclerView.setAdapter(moviesListAdapter);
-                getDataForMovies();
+                getDataForMovies(null);
                 break;
 
             case FAVORITE:
@@ -241,9 +295,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     //Network Calls
-    private void getDataForIssues() {
+    private void getDataForIssues(String searchQuery) {
         showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
-        NetworkUtils.fetchIssuesData(new Callback<IssuesDataResponse>() {
+        NetworkUtils.fetchIssuesData(searchQuery, new Callback<IssuesDataResponse>() {
             @Override
             public void onResponse(Call<IssuesDataResponse> call, Response<IssuesDataResponse> response) {
                 if (response.body() != null) {
@@ -263,9 +317,9 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void getDataForVolumes() {
+    private void getDataForVolumes(String searchQuery) {
         showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
-        NetworkUtils.fetchVolumesData(new Callback<VolumesDataResponse>() {
+        NetworkUtils.fetchVolumesData(searchQuery, new Callback<VolumesDataResponse>() {
             @Override
             public void onResponse(Call<VolumesDataResponse> call, Response<VolumesDataResponse> response) {
                 if (response.body() != null) {
@@ -285,31 +339,9 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    private void getDataForMovies() {
+    private void getDataForCharacters(String searchQuery) {
         showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
-        NetworkUtils.fetchMoviesData(new Callback<MoviesDataResponse>() {
-            @Override
-            public void onResponse(Call<MoviesDataResponse> call, Response<MoviesDataResponse> response) {
-                if (response.body() != null) {
-                    moviesDataList = response.body().getResults();
-                    moviesListAdapter.updateVolumesData(moviesDataList);
-                } else {
-                    showErrorMessage(getString(R.string.network_error));
-                }
-                hideProgressIndicator();
-            }
-
-            @Override
-            public void onFailure(Call<MoviesDataResponse> call, Throwable t) {
-                hideProgressIndicator();
-                showErrorMessage(t.getLocalizedMessage());
-            }
-        });
-    }
-
-    private void getDataForCharacters() {
-        showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
-        NetworkUtils.fetchCharactersData(new Callback<CharactersDataResponse>() {
+        NetworkUtils.fetchCharactersData(searchQuery, new Callback<CharactersDataResponse>() {
             @Override
             public void onResponse(Call<CharactersDataResponse> call, Response<CharactersDataResponse> response) {
                 if (response.body() != null) {
@@ -329,24 +361,70 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    private void getDataForMovies(String searchQuery) {
+        showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
+        NetworkUtils.fetchMoviesData(searchQuery, new Callback<MoviesDataResponse>() {
+            @Override
+            public void onResponse(Call<MoviesDataResponse> call, Response<MoviesDataResponse> response) {
+                if (response.body() != null) {
+                    moviesDataList = response.body().getResults();
+                    moviesListAdapter.updateVolumesData(moviesDataList);
+                } else {
+                    showErrorMessage(getString(R.string.network_error));
+                }
+                hideProgressIndicator();
+            }
+
+            @Override
+            public void onFailure(Call<MoviesDataResponse> call, Throwable t) {
+                hideProgressIndicator();
+                showErrorMessage(t.getLocalizedMessage());
+            }
+        });
+    }
+
     //Click Callbacks
     @Override
     public void onComicsContentClick(int clickedItemIndex) {
+        Context context = MainActivity.this;
+        Class destinationActivity = IssueDetailActivity.class;
+        Intent intent = new Intent(context, destinationActivity);
 
+        IssuesData issuesData = issuesDataList.get(clickedItemIndex);
+        intent.putExtra(Intent.EXTRA_TEXT, issuesData.getIssuesId());
+        startActivity(intent);
     }
 
     @Override
     public void onVolumesContentClick(int clickedItemIndex) {
+        Context context = MainActivity.this;
+        Class destinationActivity = VolumeDetailActivity.class;
+        Intent intent = new Intent(context, destinationActivity);
 
-    }
-
-    @Override
-    public void onMoviesContentClick(int clickedItemIndex) {
-
+        VolumesData volumesData = volumesDataList.get(clickedItemIndex);
+        intent.putExtra(Intent.EXTRA_TEXT, volumesData.getVolumesId());
+        startActivity(intent);
     }
 
     @Override
     public void onCharacterContentClick(int clickedItemIndex) {
+        Context context = MainActivity.this;
+        Class destinationActivity = CharacterDetailActivity.class;
+        Intent intent = new Intent(context, destinationActivity);
 
+        CharactersData characterData = charactersDataList.get(clickedItemIndex);
+        intent.putExtra(Intent.EXTRA_TEXT, characterData.getCharacterId());
+        startActivity(intent);
+    }
+
+    @Override
+    public void onMoviesContentClick(int clickedItemIndex) {
+        Context context = MainActivity.this;
+        Class destinationActivity = MovieDetailActivity.class;
+        Intent intent = new Intent(context, destinationActivity);
+
+        MoviesData moviesData = moviesDataList.get(clickedItemIndex);
+        intent.putExtra(Intent.EXTRA_TEXT, moviesData.getMovieId());
+        startActivity(intent);
     }
 }

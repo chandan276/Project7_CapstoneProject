@@ -1,6 +1,7 @@
 package com.chandan.android.comicsworld.utilities;
 
 import com.chandan.android.comicsworld.BuildConfig;
+import com.chandan.android.comicsworld.model.characters.CharacterDetailDataResponse;
 import com.chandan.android.comicsworld.model.characters.CharactersDataResponse;
 import com.chandan.android.comicsworld.model.issues.IssuesDataResponse;
 import com.chandan.android.comicsworld.model.movies.MoviesDataResponse;
@@ -28,13 +29,20 @@ public class NetworkUtils {
                 .build();
     }
 
-    public static void fetchIssuesData(final Callback<IssuesDataResponse> arrayCallback) {
+    public static void fetchIssuesData(String searchQuery, final Callback<IssuesDataResponse> arrayCallback) {
         if (retrofit == null) {
             initializeRetrofit();
         }
         ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
 
-        Call<IssuesDataResponse> call = comicVineApiService.getIssuesData(DATA_FORMAT, API_KEY);
+        Call<IssuesDataResponse> call;
+
+        if (searchQuery == null) {
+            call = comicVineApiService.getIssuesData(DATA_FORMAT, API_KEY);
+        } else {
+            call = comicVineApiService.getSearchResultForIssues("name:" + searchQuery,
+                    DATA_FORMAT, API_KEY);
+        }
 
         call.enqueue(new Callback<IssuesDataResponse>() {
 
@@ -50,13 +58,20 @@ public class NetworkUtils {
         });
     }
 
-    public static void fetchVolumesData(final Callback<VolumesDataResponse> arrayCallback) {
+    public static void fetchVolumesData(String searchQuery, final Callback<VolumesDataResponse> arrayCallback) {
         if (retrofit == null) {
             initializeRetrofit();
         }
         ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
 
-        Call<VolumesDataResponse> call = comicVineApiService.getVolumesData(DATA_FORMAT, API_KEY);
+        Call<VolumesDataResponse> call;
+
+        if (searchQuery == null) {
+            call = comicVineApiService.getVolumesData(DATA_FORMAT, API_KEY);
+        } else {
+            call = comicVineApiService.getSearchResultForVolumes("name:" + searchQuery,
+                    DATA_FORMAT, API_KEY);
+        }
 
         call.enqueue(new Callback<VolumesDataResponse>() {
 
@@ -72,13 +87,20 @@ public class NetworkUtils {
         });
     }
 
-    public static void fetchCharactersData(final Callback<CharactersDataResponse> arrayCallback) {
+    public static void fetchCharactersData(String searchQuery, final Callback<CharactersDataResponse> arrayCallback) {
         if (retrofit == null) {
             initializeRetrofit();
         }
         ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
 
-        Call<CharactersDataResponse> call = comicVineApiService.getCharactersData(DATA_FORMAT, API_KEY);
+        Call<CharactersDataResponse> call;
+
+        if (searchQuery == null) {
+            call = comicVineApiService.getCharactersData(DATA_FORMAT, API_KEY);
+        } else {
+            call = comicVineApiService.getSearchResultForCharacters("name:" + searchQuery,
+                    DATA_FORMAT, API_KEY);
+        }
 
         call.enqueue(new Callback<CharactersDataResponse>() {
 
@@ -94,13 +116,42 @@ public class NetworkUtils {
         });
     }
 
-    public static void fetchMoviesData(final Callback<MoviesDataResponse> arrayCallback) {
+    public static void fetchCharacterDetailsData(Integer characterId, final Callback<CharacterDetailDataResponse> arrayCallback) {
         if (retrofit == null) {
             initializeRetrofit();
         }
         ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
 
-        Call<MoviesDataResponse> call = comicVineApiService.getMoviesData(DATA_FORMAT, API_KEY);
+        Call<CharacterDetailDataResponse> call = comicVineApiService.getCharacterDetailData(characterId, DATA_FORMAT, API_KEY);
+
+        call.enqueue(new Callback<CharacterDetailDataResponse>() {
+
+            @Override
+            public void onResponse(Call<CharacterDetailDataResponse> call, Response<CharacterDetailDataResponse> response) {
+                arrayCallback.onResponse(call, response);
+            }
+
+            @Override
+            public void onFailure(Call<CharacterDetailDataResponse> call, Throwable throwable) {
+                arrayCallback.onFailure(call, throwable);
+            }
+        });
+    }
+
+    public static void fetchMoviesData(String searchQuery, final Callback<MoviesDataResponse> arrayCallback) {
+        if (retrofit == null) {
+            initializeRetrofit();
+        }
+        ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
+
+        Call<MoviesDataResponse> call;
+
+        if (searchQuery == null) {
+            call = comicVineApiService.getMoviesData(DATA_FORMAT, API_KEY);
+        } else {
+            call = comicVineApiService.getSearchResultForMovies("name:" + searchQuery,
+                    DATA_FORMAT, API_KEY);
+        }
 
         call.enqueue(new Callback<MoviesDataResponse>() {
 
