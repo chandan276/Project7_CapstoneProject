@@ -20,4 +20,6 @@
     <dimen name="favorite_icon_height">30dp</dimen>
     <dimen name="favorite_icon_top_margin">15dp</dimen>
     <dimen name="favorite_icon_end_margin">5dp</dimen>
+
+    <dimen name="issue_details_header_image_height">240dp</dimen>
 </resources>

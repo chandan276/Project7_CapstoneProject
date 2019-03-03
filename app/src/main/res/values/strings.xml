@@ -20,6 +20,20 @@
     <!-- Characters Strings -->
     <string name="characters_drawer_title">Characters</string>
     <string name="home_screen_characters_image_desc">Character Image</string>
+    <string name="dummy_character_name" translatable="false">Rick Grimes</string>
+    <string name="dummy_character_real_name" translatable="false">Richard Grimes</string>
+    <string name="dummy_character_aliases" translatable="false">Alias, Alias, Alias</string>
+    <string name="dummy_character_gender" translatable="false">Male</string>
+    <string name="dummy_character_origin" translatable="false">Human</string>
+    <string name="dummy_character_birthdate" translatable="false">Jul 24, 1975</string>
+    <string name="a11y_character_portrait">Character portrait</string>
+    <string name="character_details_real_name">Real name:</string>
+    <string name="character_details_aliases">Aliases:</string>
+    <string name="character_details_birth">Date of birth:</string>
+    <string name="character_details_origin">Origin:</string>
+    <string name="character_details_gender">Gender:</string>
+    <string name="male_gender">Male</string>
+    <string name="female_gender">Female</string>
 
     <!-- Videos Strings -->
     <string name="movies_drawer_title">Movies</string>
@@ -35,6 +49,11 @@
 
     <!-- Common Strings -->
     <string name="network_error">Cannot fetch result at this time. Please try again later.</string>
+    <string name="not_available">Not Available</string>
+    <string name="lorem_ipsum" translatable="false">
+    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
+    the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of
+    type and scrambled it to make a type specimen book.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

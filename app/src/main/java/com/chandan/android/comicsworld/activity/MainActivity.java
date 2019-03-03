@@ -66,8 +66,13 @@ public class MainActivity extends AppCompatActivity
 
     private List<IssuesData> issuesDataList = new ArrayList<>();
     private List<VolumesData> volumesDataList = new ArrayList<>();
-    private List<MoviesData> moviesDataList = new ArrayList<>();
     private List<CharactersData> charactersDataList = new ArrayList<>();
+    private List<MoviesData> moviesDataList = new ArrayList<>();
+
+    private static final String ISSUE_RESPONSE_TEXT_KEY = "issuekey";
+    private static final String VOLUME_RESPONSE_TEXT_KEY = "volumekey";
+    private static final String CHARACTERS_RESPONSE_TEXT_KEY = "characterkey";
+    private static final String MOVIES_RESPONSE_TEXT_KEY = "moviekey";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +80,15 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         setupSideDrawer();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(ISSUE_RESPONSE_TEXT_KEY, new ArrayList<IssuesData>(issuesDataList));
+        outState.putParcelableArrayList(VOLUME_RESPONSE_TEXT_KEY, new ArrayList<VolumesData>(volumesDataList));
+        outState.putParcelableArrayList(CHARACTERS_RESPONSE_TEXT_KEY, new ArrayList<CharactersData>(charactersDataList));
+        outState.putParcelableArrayList(MOVIES_RESPONSE_TEXT_KEY, new ArrayList<MoviesData>(moviesDataList));
     }
 
     @Override
@@ -269,6 +283,7 @@ public class MainActivity extends AppCompatActivity
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
+    //Progress Indicator
     public void showProgressIndicator(Context context, String titleLabel, String detailLabel, boolean isCancellable) {
         if (context == null) {
             return;
@@ -386,45 +401,31 @@ public class MainActivity extends AppCompatActivity
     //Click Callbacks
     @Override
     public void onComicsContentClick(int clickedItemIndex) {
-        Context context = MainActivity.this;
-        Class destinationActivity = IssueDetailActivity.class;
-        Intent intent = new Intent(context, destinationActivity);
-
         IssuesData issuesData = issuesDataList.get(clickedItemIndex);
-        intent.putExtra(Intent.EXTRA_TEXT, issuesData.getIssuesId());
-        startActivity(intent);
+        performIntentTransition(IssueDetailActivity.class, issuesData.getIssuesId());
     }
 
     @Override
     public void onVolumesContentClick(int clickedItemIndex) {
-        Context context = MainActivity.this;
-        Class destinationActivity = VolumeDetailActivity.class;
-        Intent intent = new Intent(context, destinationActivity);
-
         VolumesData volumesData = volumesDataList.get(clickedItemIndex);
-        intent.putExtra(Intent.EXTRA_TEXT, volumesData.getVolumesId());
-        startActivity(intent);
+        performIntentTransition(VolumeDetailActivity.class, volumesData.getVolumesId());
     }
 
     @Override
     public void onCharacterContentClick(int clickedItemIndex) {
-        Context context = MainActivity.this;
-        Class destinationActivity = CharacterDetailActivity.class;
-        Intent intent = new Intent(context, destinationActivity);
-
         CharactersData characterData = charactersDataList.get(clickedItemIndex);
-        intent.putExtra(Intent.EXTRA_TEXT, characterData.getCharacterId());
-        startActivity(intent);
+        performIntentTransition(CharacterDetailActivity.class, characterData.getCharacterId());
     }
 
     @Override
     public void onMoviesContentClick(int clickedItemIndex) {
-        Context context = MainActivity.this;
-        Class destinationActivity = MovieDetailActivity.class;
-        Intent intent = new Intent(context, destinationActivity);
-
         MoviesData moviesData = moviesDataList.get(clickedItemIndex);
-        intent.putExtra(Intent.EXTRA_TEXT, moviesData.getMovieId());
+        performIntentTransition(MovieDetailActivity.class, moviesData.getMovieId());
+    }
+
+    private void performIntentTransition(Class destinationActivity, Integer idExtra) {
+        Intent intent = new Intent(MainActivity.this, destinationActivity);
+        intent.putExtra(Intent.EXTRA_TEXT, idExtra);
         startActivity(intent);
     }
 }

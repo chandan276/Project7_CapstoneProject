@@ -53,6 +53,9 @@ dependencies {
     //KProgressHUD Dependency
     implementation 'com.kaopiz:kprogresshud:1.2.0'
 
+    //Material Values Dependency
+    implementation 'blue.aodev:material-values:1.1.1'
+
     //Firebase dependency
     //TODO: Include Analytics and Crashlytics dependency
 }

@@ -23,15 +23,19 @@
 
         <activity
             android:name=".activity.CharacterDetailActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:launchMode="singleTop" />
 
         <activity android:name=".activity.IssueDetailActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:launchMode="singleTop"/>
 
         <activity android:name=".activity.VolumeDetailActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:launchMode="singleTop"/>
         
         <activity android:name=".activity.MovieDetailActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:launchMode="singleTop"/>
     </application>
 

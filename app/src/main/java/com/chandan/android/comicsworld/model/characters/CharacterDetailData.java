@@ -1,10 +1,15 @@
 package com.chandan.android.comicsworld.model.characters;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.TextUtils;
+
 import com.chandan.android.comicsworld.model.commons.ImagesData;
 import com.chandan.android.comicsworld.model.commons.PublisherData;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class CharacterDetailData {
@@ -23,7 +28,7 @@ public class CharacterDetailData {
     private final static String Appear_In_Tag = "count_of_issue_appearances";
     private final static String Birthday_Tag = "birth";
     private final static String Powers_Tag = "powers";
-    private final static String Description_Tag = "description";
+    private final static String Description_Tag = "deck";
 
     @SerializedName(Super_Name_Tag)
     private String superName;
@@ -53,22 +58,18 @@ public class CharacterDetailData {
     private String description;
 
     @SerializedName(Creators_Tag)
-    private ArrayList creatorsArray;
+    private List<CreatorsData> creatorsArray;
 
     @SerializedName(Powers_Tag)
-    private ArrayList powersArray;
+    private List<PowersData> powersArray;
 
     @SerializedName(Character_Type_Tag)
-    private Map characterTypeMap;
+    private OriginData originData;
 
     @SerializedName(First_Appearence_Tag)
-    private Map FirstAppearenceMap;
+    private FirstAppearence firstAppearenceData;
 
-    public CharacterDetailData(String superName, String realName, String aliases, ImagesData imagesData,
-                               PublisherData publisherData, Integer gender, Integer issuesAppearedCount,
-                               String birthday, String description, ArrayList creatorsArray, ArrayList powersArray,
-                               Map characterTypeMap, Map firstAppearenceMap) {
-
+    public CharacterDetailData(String superName, String realName, String aliases, ImagesData imagesData, PublisherData publisherData, Integer gender, Integer issuesAppearedCount, String birthday, String description, List<CreatorsData> creatorsArray, List<PowersData> powersArray, OriginData originData, FirstAppearence firstAppearenceData) {
         this.superName = superName;
         this.realName = realName;
         this.aliases = aliases;
@@ -80,8 +81,32 @@ public class CharacterDetailData {
         this.description = description;
         this.creatorsArray = creatorsArray;
         this.powersArray = powersArray;
-        this.characterTypeMap = characterTypeMap;
-        FirstAppearenceMap = firstAppearenceMap;
+        this.originData = originData;
+        this.firstAppearenceData = firstAppearenceData;
+    }
+
+    public String getCharacterImage() {
+        return this.imagesData.getSuperImageUrl();
+    }
+
+    public String getPublisherName() {
+        return this.publisherData.getPublisherName();
+    }
+
+    public String getOriginName() {
+        return this.originData.getOriginName();
+    }
+
+    public String getfirstAppearence() {
+        return this.firstAppearenceData.getFirstAppearenceName();
+    }
+
+    public String getCreators() {
+        return TextUtils.join(",", this.creatorsArray);
+    }
+
+    public String getPowers() {
+        return TextUtils.join(",", this.powersArray);
     }
 
     public String getSuperName() {
@@ -156,35 +181,199 @@ public class CharacterDetailData {
         this.description = description;
     }
 
-    public ArrayList getCreatorsArray() {
+    public List<CreatorsData> getCreatorsArray() {
         return creatorsArray;
     }
 
-    public void setCreatorsArray(ArrayList creatorsArray) {
+    public void setCreatorsArray(List<CreatorsData> creatorsArray) {
         this.creatorsArray = creatorsArray;
     }
 
-    public ArrayList getPowersArray() {
+    public List<PowersData> getPowersArray() {
         return powersArray;
     }
 
-    public void setPowersArray(ArrayList powersArray) {
+    public void setPowersArray(List<PowersData> powersArray) {
         this.powersArray = powersArray;
     }
 
-    public Map getCharacterTypeMap() {
-        return characterTypeMap;
+    public OriginData getOriginData() {
+        return originData;
     }
 
-    public void setCharacterTypeMap(Map characterTypeMap) {
-        this.characterTypeMap = characterTypeMap;
+    public void setOriginData(OriginData originData) {
+        this.originData = originData;
     }
 
-    public Map getFirstAppearenceMap() {
-        return FirstAppearenceMap;
+    public FirstAppearence getFirstAppearenceData() {
+        return firstAppearenceData;
     }
 
-    public void setFirstAppearenceMap(Map firstAppearenceMap) {
-        FirstAppearenceMap = firstAppearenceMap;
+    public void setFirstAppearenceData(FirstAppearence firstAppearenceData) {
+        this.firstAppearenceData = firstAppearenceData;
+    }
+
+    private class CreatorsData implements Parcelable {
+        private final static String Name_Tag = "name";
+
+        @SerializedName(Name_Tag)
+        private String creatorsName;
+
+        public String getCreatorsName() {
+            return creatorsName;
+        }
+
+        public void setCreatorsName(String creatorsName) {
+            this.creatorsName = creatorsName;
+        }
+
+        protected CreatorsData(Parcel in) {
+            creatorsName = in.readString();
+        }
+
+        public final Creator<CreatorsData> CREATOR = new Creator<CreatorsData>() {
+            @Override
+            public CreatorsData createFromParcel(Parcel in) {
+                return new CreatorsData(in);
+            }
+
+            @Override
+            public CreatorsData[] newArray(int size) {
+                return new CreatorsData[size];
+            }
+        };
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(creatorsName);
+        }
+    }
+
+    private class PowersData implements Parcelable {
+        private final static String Name_Tag = "name";
+
+        @SerializedName(Name_Tag)
+        private String powerName;
+
+        protected PowersData(Parcel in) {
+            powerName = in.readString();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(powerName);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public final Creator<PowersData> CREATOR = new Creator<PowersData>() {
+            @Override
+            public PowersData createFromParcel(Parcel in) {
+                return new PowersData(in);
+            }
+
+            @Override
+            public PowersData[] newArray(int size) {
+                return new PowersData[size];
+            }
+        };
+
+        public String getPowerName() {
+            return powerName;
+        }
+
+        public void setPowerName(String powerName) {
+            this.powerName = powerName;
+        }
+    }
+
+    private class OriginData implements Parcelable {
+        private final static String Name_Tag = "name";
+
+        @SerializedName(Name_Tag)
+        private String originName;
+
+        protected OriginData(Parcel in) {
+            originName = in.readString();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(originName);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public final Creator<OriginData> CREATOR = new Creator<OriginData>() {
+            @Override
+            public OriginData createFromParcel(Parcel in) {
+                return new OriginData(in);
+            }
+
+            @Override
+            public OriginData[] newArray(int size) {
+                return new OriginData[size];
+            }
+        };
+
+        public String getOriginName() {
+            return originName;
+        }
+
+        public void setOriginName(String originName) {
+            this.originName = originName;
+        }
+    }
+
+    private class FirstAppearence implements Parcelable {
+        private final static String Name_Tag = "name";
+
+        @SerializedName(Name_Tag)
+        private String firstAppearenceName;
+
+        protected FirstAppearence(Parcel in) {
+            firstAppearenceName = in.readString();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(firstAppearenceName);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public final Creator<FirstAppearence> CREATOR = new Creator<FirstAppearence>() {
+            @Override
+            public FirstAppearence createFromParcel(Parcel in) {
+                return new FirstAppearence(in);
+            }
+
+            @Override
+            public FirstAppearence[] newArray(int size) {
+                return new FirstAppearence[size];
+            }
+        };
+
+        public String getFirstAppearenceName() {
+            return firstAppearenceName;
+        }
+
+        public void setFirstAppearenceName(String firstAppearenceName) {
+            this.firstAppearenceName = firstAppearenceName;
+        }
     }
 }

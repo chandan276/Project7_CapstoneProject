@@ -8,17 +8,17 @@ public class CharacterDetailDataResponse {
     private final static String Results_Tag = "results";
 
     @SerializedName(Results_Tag)
-    private List<CharacterDetailData> results;
+    private CharacterDetailData results;
 
-    public CharacterDetailDataResponse(List<CharacterDetailData> results) {
+    public CharacterDetailDataResponse(CharacterDetailData results) {
         this.results = results;
     }
 
-    public List<CharacterDetailData> getResults() {
+    public CharacterDetailData getResults() {
         return results;
     }
 
-    public void setResults(List<CharacterDetailData> results) {
+    public void setResults(CharacterDetailData results) {
         this.results = results;
     }
 }
