@@ -15,10 +15,22 @@
 
     <!-- Volumes Strings -->
     <string name="volumes_drawer_title">Volumes</string>
+    <string name="volumes_details_title">Volume Detail</string>
     <string name="home_screen_volumes_image_desc">Volume Image</string>
+    <string name="a11y_volume_cover">Volume cover</string>
+    <string name="dummy_volume_name" translatable="false">The Walking Dead</string>
+    <string name="dummy_volume_name_with_number" translatable="false">The Walking Dead #168</string>
+    <string name="dummy_date" translatable="false">Jun 7, 2017</string>
+    <string name="dummy_publisher">by Skybound</string>
+    <string name="dummy_publisher_name">Skybound</string>
+    <string name="dummy_issues_count">Issues: 10</string>
+    <string name="dummy_year">2007</string>
+    <string name="volume_details_publisher">Publisher:</string>
+    <string name="volume_details_year">Year:</string>
 
     <!-- Characters Strings -->
     <string name="characters_drawer_title">Characters</string>
+    <string name="characters_details_title">Character Detail</string>
     <string name="home_screen_characters_image_desc">Character Image</string>
     <string name="dummy_character_name" translatable="false">Rick Grimes</string>
     <string name="dummy_character_real_name" translatable="false">Richard Grimes</string>

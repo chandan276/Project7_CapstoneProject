@@ -1,5 +1,6 @@
 package com.chandan.android.comicsworld.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -12,24 +13,36 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.chandan.android.comicsworld.R;
-import com.chandan.android.comicsworld.fragment.IssueCharactersFragment;
-import com.chandan.android.comicsworld.fragment.IssueDetailFragment;
 import com.chandan.android.comicsworld.fragment.VolumeInfoFragment;
 import com.chandan.android.comicsworld.fragment.VolumeOtherIssuesFragment;
+import com.chandan.android.comicsworld.model.volumes.VolumeDetailData;
+import com.chandan.android.comicsworld.model.volumes.VolumeDetailDataResponse;
+import com.chandan.android.comicsworld.utilities.NetworkUtils;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class VolumeDetailActivity extends AppCompatActivity {
 
+    private VolumeDetailData volumeDetailData;
     private Integer volumeId;
+
+    private KProgressHUD progressIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_volume_detail);
+
+        setTitle(R.string.volumes_details_title);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -41,12 +54,6 @@ public class VolumeDetailActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
         Intent intent = getIntent();
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             volumeId = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
@@ -56,6 +63,8 @@ public class VolumeDetailActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        getVolumeDetails();
     }
 
     @Override
@@ -70,7 +79,11 @@ public class VolumeDetailActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         VolumeDetailActivity.ViewPagerAdapter adapter = new VolumeDetailActivity.ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new VolumeInfoFragment(), "INFO");
+
+        VolumeInfoFragment volumeInfoFragment = new VolumeInfoFragment();
+        volumeInfoFragment.setVolumeData(volumeDetailData);
+        adapter.addFragment(volumeInfoFragment, "INFO");
+
         adapter.addFragment(new VolumeOtherIssuesFragment(), "OTHER ISSUES");
         viewPager.setAdapter(adapter);
     }
@@ -102,5 +115,65 @@ public class VolumeDetailActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    private void getVolumeDetails() {
+        showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
+        NetworkUtils.fetchVolumeDetailData(volumeId, new Callback<VolumeDetailDataResponse>() {
+            @Override
+            public void onResponse(Call<VolumeDetailDataResponse> call, Response<VolumeDetailDataResponse> response) {
+                if (response.body() != null) {
+                    volumeDetailData = response.body().getResults();
+                    setupViewPager();
+                } else {
+                    showErrorMessage(getString(R.string.network_error));
+                }
+                hideProgressIndicator();
+            }
+
+            @Override
+            public void onFailure(Call<VolumeDetailDataResponse> call, Throwable t) {
+                hideProgressIndicator();
+                showErrorMessage(t.getLocalizedMessage());
+            }
+        });
+    }
+
+    private void setupViewPager() {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+    }
+
+    private void showErrorMessage(String error) {
+        Toast.makeText(this, error, Toast.LENGTH_LONG).show();
+    }
+
+    //Progress Indicator
+    public void showProgressIndicator(Context context, String titleLabel, String detailLabel, boolean isCancellable) {
+        if (context == null) {
+            return;
+        }
+
+        progressIndicator = KProgressHUD.create(context)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(isCancellable)
+                .setAnimationSpeed(R.integer.progress_animation_speed)
+                .setDimAmount(R.integer.progress_dimension)
+                .show();
+
+        if (titleLabel != null && !titleLabel.equals("")) {
+            progressIndicator.setLabel(titleLabel);
+        }
+
+        if (detailLabel != null && !detailLabel.equals("")) {
+            progressIndicator.setDetailsLabel(detailLabel);
+        }
+    }
+
+    public void hideProgressIndicator() {
+        progressIndicator.dismiss();
     }
 }

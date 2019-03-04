@@ -4,6 +4,7 @@ import com.chandan.android.comicsworld.model.characters.CharacterDetailDataRespo
 import com.chandan.android.comicsworld.model.characters.CharactersDataResponse;
 import com.chandan.android.comicsworld.model.issues.IssuesDataResponse;
 import com.chandan.android.comicsworld.model.movies.MoviesDataResponse;
+import com.chandan.android.comicsworld.model.volumes.VolumeDetailDataResponse;
 import com.chandan.android.comicsworld.model.volumes.VolumesDataResponse;
 
 import retrofit2.Call;
@@ -54,6 +55,11 @@ public interface ComicVineApiService {
     Call<MoviesDataResponse> getSearchResultForMovies(@Query(SEARCH) String searchString,
                                                       @Query(DATA_FORMAT) String dataFormat,
                                                       @Query(PARAM_KEY) String apiKey);
+
+    @GET("volume/" + VOLUME_TYPE_CODE + "-{id}/")
+    Call<VolumeDetailDataResponse> getVolumeDetailData(@Path(ID) Integer volumeId,
+                                                       @Query(DATA_FORMAT) String dataFormat,
+                                                       @Query(PARAM_KEY) String apiKey);
 
     @GET("character/" + CHARACTER_TYPE_CODE + "-{id}/")
     Call<CharacterDetailDataResponse> getCharacterDetailData(@Path(ID) Integer characterId,

@@ -40,6 +40,10 @@ public class CharacterInfoFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        setupUI();
+    }
+
+    private void setupUI() {
         ImageView characterImageView = (ImageView) getView().findViewById(R.id.character_details_screen);
         ImageUtils.displayImageFromUrlWithPlaceHolder(characterImageView.getContext(), characterDetailDataList.getCharacterImage(),
                 characterImageView, R.drawable.image_placeholder, R.drawable.error_image_loading);

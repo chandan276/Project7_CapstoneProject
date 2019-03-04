@@ -42,6 +42,8 @@ public class CharacterDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_character_detail);
 
+        setTitle(R.string.characters_details_title);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -122,12 +124,7 @@ public class CharacterDetailActivity extends AppCompatActivity {
             public void onResponse(Call<CharacterDetailDataResponse> call, Response<CharacterDetailDataResponse> response) {
                 if (response.body() != null) {
                     characterDetailDataList = response.body().getResults();
-
-                    ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-                    setupViewPager(viewPager);
-
-                    TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-                    tabLayout.setupWithViewPager(viewPager);
+                    setupViewPager();
                 } else {
                     showErrorMessage(getString(R.string.network_error));
                 }
@@ -140,6 +137,14 @@ public class CharacterDetailActivity extends AppCompatActivity {
                 showErrorMessage(t.getLocalizedMessage());
             }
         });
+    }
+
+    private void setupViewPager() {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     private void showErrorMessage(String error) {

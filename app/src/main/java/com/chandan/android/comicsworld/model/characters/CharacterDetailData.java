@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CharacterDetailData {
-
-    //https://comicvine.gamespot.com/lightning-lad/4005-1253/images/
+public class CharacterDetailData implements Parcelable {
 
     private final static String Super_Name_Tag = "name";
     private final static String Real_Name_Tag = "real_name";
@@ -84,6 +82,66 @@ public class CharacterDetailData {
         this.originData = originData;
         this.firstAppearenceData = firstAppearenceData;
     }
+
+    protected CharacterDetailData(Parcel in) {
+        superName = in.readString();
+        realName = in.readString();
+        aliases = in.readString();
+        imagesData = in.readParcelable(ImagesData.class.getClassLoader());
+        publisherData = in.readParcelable(PublisherData.class.getClassLoader());
+        if (in.readByte() == 0) {
+            gender = null;
+        } else {
+            gender = in.readInt();
+        }
+        if (in.readByte() == 0) {
+            issuesAppearedCount = null;
+        } else {
+            issuesAppearedCount = in.readInt();
+        }
+        birthday = in.readString();
+        description = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(superName);
+        dest.writeString(realName);
+        dest.writeString(aliases);
+        dest.writeParcelable(imagesData, flags);
+        dest.writeParcelable(publisherData, flags);
+        if (gender == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(gender);
+        }
+        if (issuesAppearedCount == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(issuesAppearedCount);
+        }
+        dest.writeString(birthday);
+        dest.writeString(description);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<CharacterDetailData> CREATOR = new Creator<CharacterDetailData>() {
+        @Override
+        public CharacterDetailData createFromParcel(Parcel in) {
+            return new CharacterDetailData(in);
+        }
+
+        @Override
+        public CharacterDetailData[] newArray(int size) {
+            return new CharacterDetailData[size];
+        }
+    };
 
     public String getCharacterImage() {
         return this.imagesData.getSuperImageUrl();
@@ -213,7 +271,7 @@ public class CharacterDetailData {
         this.firstAppearenceData = firstAppearenceData;
     }
 
-    private class CreatorsData implements Parcelable {
+    private class CreatorsData {
         private final static String Name_Tag = "name";
 
         @SerializedName(Name_Tag)
@@ -226,65 +284,13 @@ public class CharacterDetailData {
         public void setCreatorsName(String creatorsName) {
             this.creatorsName = creatorsName;
         }
-
-        protected CreatorsData(Parcel in) {
-            creatorsName = in.readString();
-        }
-
-        public final Creator<CreatorsData> CREATOR = new Creator<CreatorsData>() {
-            @Override
-            public CreatorsData createFromParcel(Parcel in) {
-                return new CreatorsData(in);
-            }
-
-            @Override
-            public CreatorsData[] newArray(int size) {
-                return new CreatorsData[size];
-            }
-        };
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(creatorsName);
-        }
     }
 
-    private class PowersData implements Parcelable {
+    private class PowersData {
         private final static String Name_Tag = "name";
 
         @SerializedName(Name_Tag)
         private String powerName;
-
-        protected PowersData(Parcel in) {
-            powerName = in.readString();
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(powerName);
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        public final Creator<PowersData> CREATOR = new Creator<PowersData>() {
-            @Override
-            public PowersData createFromParcel(Parcel in) {
-                return new PowersData(in);
-            }
-
-            @Override
-            public PowersData[] newArray(int size) {
-                return new PowersData[size];
-            }
-        };
 
         public String getPowerName() {
             return powerName;
@@ -295,37 +301,11 @@ public class CharacterDetailData {
         }
     }
 
-    private class OriginData implements Parcelable {
+    private class OriginData {
         private final static String Name_Tag = "name";
 
         @SerializedName(Name_Tag)
         private String originName;
-
-        protected OriginData(Parcel in) {
-            originName = in.readString();
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(originName);
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        public final Creator<OriginData> CREATOR = new Creator<OriginData>() {
-            @Override
-            public OriginData createFromParcel(Parcel in) {
-                return new OriginData(in);
-            }
-
-            @Override
-            public OriginData[] newArray(int size) {
-                return new OriginData[size];
-            }
-        };
 
         public String getOriginName() {
             return originName;
@@ -336,37 +316,11 @@ public class CharacterDetailData {
         }
     }
 
-    private class FirstAppearence implements Parcelable {
+    private class FirstAppearence {
         private final static String Name_Tag = "name";
 
         @SerializedName(Name_Tag)
         private String firstAppearenceName;
-
-        protected FirstAppearence(Parcel in) {
-            firstAppearenceName = in.readString();
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(firstAppearenceName);
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        public final Creator<FirstAppearence> CREATOR = new Creator<FirstAppearence>() {
-            @Override
-            public FirstAppearence createFromParcel(Parcel in) {
-                return new FirstAppearence(in);
-            }
-
-            @Override
-            public FirstAppearence[] newArray(int size) {
-                return new FirstAppearence[size];
-            }
-        };
 
         public String getFirstAppearenceName() {
             return firstAppearenceName;

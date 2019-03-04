@@ -5,6 +5,7 @@ import com.chandan.android.comicsworld.model.characters.CharacterDetailDataRespo
 import com.chandan.android.comicsworld.model.characters.CharactersDataResponse;
 import com.chandan.android.comicsworld.model.issues.IssuesDataResponse;
 import com.chandan.android.comicsworld.model.movies.MoviesDataResponse;
+import com.chandan.android.comicsworld.model.volumes.VolumeDetailDataResponse;
 import com.chandan.android.comicsworld.model.volumes.VolumesDataResponse;
 import com.chandan.android.comicsworld.rest.ComicVineApiService;
 
@@ -82,6 +83,28 @@ public class NetworkUtils {
 
             @Override
             public void onFailure(Call<VolumesDataResponse> call, Throwable throwable) {
+                arrayCallback.onFailure(call, throwable);
+            }
+        });
+    }
+
+    public static void fetchVolumeDetailData(Integer volumeId, final Callback<VolumeDetailDataResponse> arrayCallback) {
+        if (retrofit == null) {
+            initializeRetrofit();
+        }
+        ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
+
+        Call<VolumeDetailDataResponse> call = comicVineApiService.getVolumeDetailData(volumeId, DATA_FORMAT, API_KEY);
+
+        call.enqueue(new Callback<VolumeDetailDataResponse>() {
+
+            @Override
+            public void onResponse(Call<VolumeDetailDataResponse> call, Response<VolumeDetailDataResponse> response) {
+                arrayCallback.onResponse(call, response);
+            }
+
+            @Override
+            public void onFailure(Call<VolumeDetailDataResponse> call, Throwable throwable) {
                 arrayCallback.onFailure(call, throwable);
             }
         });
