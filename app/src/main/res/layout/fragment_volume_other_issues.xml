@@ -5,10 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".fragment.VolumeOtherIssuesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/volume_details_issues_view"
+        android:scrollbarStyle="outsideOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:padding="@dimen/material_baseline_grid_0.5x"
+        android:clipToPadding="false"/>
 
 </FrameLayout>

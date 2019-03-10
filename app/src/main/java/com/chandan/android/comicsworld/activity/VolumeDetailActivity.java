@@ -34,8 +34,13 @@ public class VolumeDetailActivity extends AppCompatActivity {
 
     private VolumeDetailData volumeDetailData;
     private Integer volumeId;
+    private String volumeName;
+    private String volumeImageUrl;
 
     private KProgressHUD progressIndicator;
+
+    private static final String VOLUME_NAME_TEXT_KEY = "volumename";
+    private static final String VOLUME_IMAGE_TEXT_KEY = "volumeimage";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,8 @@ public class VolumeDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             volumeId = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
+            volumeName = intent.getStringExtra(VOLUME_NAME_TEXT_KEY);
+            volumeImageUrl = intent.getStringExtra(VOLUME_IMAGE_TEXT_KEY);
         }
     }
 
@@ -81,10 +88,12 @@ public class VolumeDetailActivity extends AppCompatActivity {
         VolumeDetailActivity.ViewPagerAdapter adapter = new VolumeDetailActivity.ViewPagerAdapter(getSupportFragmentManager());
 
         VolumeInfoFragment volumeInfoFragment = new VolumeInfoFragment();
-        volumeInfoFragment.setVolumeData(volumeDetailData);
+        volumeInfoFragment.setVolumeData(volumeDetailData, volumeName, volumeImageUrl);
         adapter.addFragment(volumeInfoFragment, "INFO");
 
-        adapter.addFragment(new VolumeOtherIssuesFragment(), "OTHER ISSUES");
+        VolumeOtherIssuesFragment volumeOtherIssuesFragment = new VolumeOtherIssuesFragment();
+        volumeOtherIssuesFragment.setVolumeData(volumeDetailData);
+        adapter.addFragment(volumeOtherIssuesFragment, "OTHER ISSUES");
         viewPager.setAdapter(adapter);
     }
 

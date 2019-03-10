@@ -20,6 +20,8 @@ import com.chandan.android.comicsworld.utilities.ImageUtils;
 public class VolumeInfoFragment extends Fragment {
 
     private VolumeDetailData volumeDetailData;
+    private String volumeName;
+    private String volumeImageUrl;
 
     public VolumeInfoFragment() {
         // Required empty public constructor
@@ -40,12 +42,12 @@ public class VolumeInfoFragment extends Fragment {
     }
 
     private void setupUI() {
-//        ImageView volumeImageView = (ImageView) getView().findViewById(R.id.volume_details_screen);
-//        ImageUtils.displayImageFromUrlWithPlaceHolder(volumeImageView.getContext(), volumeDetailData.getCharacterImage(),
-//                volumeImageView, R.drawable.image_placeholder, R.drawable.error_image_loading);
+        ImageView volumeImageView = (ImageView) getView().findViewById(R.id.volume_details_screen);
+        ImageUtils.displayImageFromUrlWithPlaceHolder(volumeImageView.getContext(), this.volumeImageUrl,
+                volumeImageView, R.drawable.image_placeholder, R.drawable.error_image_loading);
 
-//        TextView volumeNameTextField = (TextView) getView().findViewById(R.id.volume_details_name);
-//        volumeNameTextField.setText(characterDetailDataList.getSuperName());
+        TextView volumeNameTextField = (TextView) getView().findViewById(R.id.volume_details_name);
+        volumeNameTextField.setText(this.volumeName);
 
         TextView publisherTextField = (TextView) getView().findViewById(R.id.volume_details_publisher);
         publisherTextField.setText(volumeDetailData.getPublisherData().getPublisherName());
@@ -57,7 +59,9 @@ public class VolumeInfoFragment extends Fragment {
         descTextField.setText(Html.fromHtml(volumeDetailData.getDescription()));
     }
 
-    public void setVolumeData(VolumeDetailData volumeDetailDataList) {
+    public void setVolumeData(VolumeDetailData volumeDetailDataList, String volumeName, String volumeImageStr) {
         this.volumeDetailData = volumeDetailDataList;
+        this.volumeName = volumeName;
+        this.volumeImageUrl = volumeImageStr;
     }
 }

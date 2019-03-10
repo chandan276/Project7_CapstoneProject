@@ -2,6 +2,7 @@ package com.chandan.android.comicsworld.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,7 @@ public class CharactersListAdapter extends RecyclerView.Adapter<CharactersListAd
 
     @NonNull
     @Override
-    public CharacterListHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public CharacterListHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int i) {
         Context context = viewGroup.getContext();
         int layoutIdForListItem = R.layout.characters_list_data;
 
@@ -66,16 +67,18 @@ public class CharactersListAdapter extends RecyclerView.Adapter<CharactersListAd
 
     class CharacterListHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        CardView charcterCardView;
         ImageView characterImageView;
         TextView characterNameTextView;
 
         CharacterListHolder(View itemView) {
             super(itemView);
 
+            charcterCardView = (CardView) itemView.findViewById(R.id.character_card_view);
             characterImageView = (ImageView) itemView.findViewById(R.id.character_imageView);
             characterNameTextView = (TextView) itemView.findViewById(R.id.character_name);
 
-            itemView.setOnClickListener(this);
+            charcterCardView.setOnClickListener(this);
         }
 
         void bind(int listIndex) {

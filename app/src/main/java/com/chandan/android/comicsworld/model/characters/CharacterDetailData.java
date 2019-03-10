@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CharacterDetailData implements Parcelable {
+public class CharacterDetailData {
 
     private final static String Super_Name_Tag = "name";
     private final static String Real_Name_Tag = "real_name";
@@ -82,66 +82,6 @@ public class CharacterDetailData implements Parcelable {
         this.originData = originData;
         this.firstAppearenceData = firstAppearenceData;
     }
-
-    protected CharacterDetailData(Parcel in) {
-        superName = in.readString();
-        realName = in.readString();
-        aliases = in.readString();
-        imagesData = in.readParcelable(ImagesData.class.getClassLoader());
-        publisherData = in.readParcelable(PublisherData.class.getClassLoader());
-        if (in.readByte() == 0) {
-            gender = null;
-        } else {
-            gender = in.readInt();
-        }
-        if (in.readByte() == 0) {
-            issuesAppearedCount = null;
-        } else {
-            issuesAppearedCount = in.readInt();
-        }
-        birthday = in.readString();
-        description = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(superName);
-        dest.writeString(realName);
-        dest.writeString(aliases);
-        dest.writeParcelable(imagesData, flags);
-        dest.writeParcelable(publisherData, flags);
-        if (gender == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(gender);
-        }
-        if (issuesAppearedCount == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeInt(issuesAppearedCount);
-        }
-        dest.writeString(birthday);
-        dest.writeString(description);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<CharacterDetailData> CREATOR = new Creator<CharacterDetailData>() {
-        @Override
-        public CharacterDetailData createFromParcel(Parcel in) {
-            return new CharacterDetailData(in);
-        }
-
-        @Override
-        public CharacterDetailData[] newArray(int size) {
-            return new CharacterDetailData[size];
-        }
-    };
 
     public String getCharacterImage() {
         return this.imagesData.getSuperImageUrl();

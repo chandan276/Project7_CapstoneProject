@@ -3,7 +3,9 @@ package com.chandan.android.comicsworld.utilities;
 import com.chandan.android.comicsworld.BuildConfig;
 import com.chandan.android.comicsworld.model.characters.CharacterDetailDataResponse;
 import com.chandan.android.comicsworld.model.characters.CharactersDataResponse;
+import com.chandan.android.comicsworld.model.issues.IssueDetailDataResponse;
 import com.chandan.android.comicsworld.model.issues.IssuesDataResponse;
+import com.chandan.android.comicsworld.model.movies.MovieDetailDataResponse;
 import com.chandan.android.comicsworld.model.movies.MoviesDataResponse;
 import com.chandan.android.comicsworld.model.volumes.VolumeDetailDataResponse;
 import com.chandan.android.comicsworld.model.volumes.VolumesDataResponse;
@@ -54,6 +56,28 @@ public class NetworkUtils {
 
             @Override
             public void onFailure(Call<IssuesDataResponse> call, Throwable throwable) {
+                arrayCallback.onFailure(call, throwable);
+            }
+        });
+    }
+
+    public static void fetchIssueDetailData(Integer issueId, final Callback<IssueDetailDataResponse> arrayCallback) {
+        if (retrofit == null) {
+            initializeRetrofit();
+        }
+        ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
+
+        Call<IssueDetailDataResponse> call = comicVineApiService.getIssueDetailData(issueId, DATA_FORMAT, API_KEY);
+
+        call.enqueue(new Callback<IssueDetailDataResponse>() {
+
+            @Override
+            public void onResponse(Call<IssueDetailDataResponse> call, Response<IssueDetailDataResponse> response) {
+                arrayCallback.onResponse(call, response);
+            }
+
+            @Override
+            public void onFailure(Call<IssueDetailDataResponse> call, Throwable throwable) {
                 arrayCallback.onFailure(call, throwable);
             }
         });
@@ -185,6 +209,28 @@ public class NetworkUtils {
 
             @Override
             public void onFailure(Call<MoviesDataResponse> call, Throwable throwable) {
+                arrayCallback.onFailure(call, throwable);
+            }
+        });
+    }
+
+    public static void fetchMovieDetailsData(Integer movieId, final Callback<MovieDetailDataResponse> arrayCallback) {
+        if (retrofit == null) {
+            initializeRetrofit();
+        }
+        ComicVineApiService comicVineApiService = retrofit.create(ComicVineApiService.class);
+
+        Call<MovieDetailDataResponse> call = comicVineApiService.getMovieDetailData(movieId, DATA_FORMAT, API_KEY);
+
+        call.enqueue(new Callback<MovieDetailDataResponse>() {
+
+            @Override
+            public void onResponse(Call<MovieDetailDataResponse> call, Response<MovieDetailDataResponse> response) {
+                arrayCallback.onResponse(call, response);
+            }
+
+            @Override
+            public void onFailure(Call<MovieDetailDataResponse> call, Throwable throwable) {
                 arrayCallback.onFailure(call, throwable);
             }
         });

@@ -2,7 +2,9 @@ package com.chandan.android.comicsworld.rest;
 
 import com.chandan.android.comicsworld.model.characters.CharacterDetailDataResponse;
 import com.chandan.android.comicsworld.model.characters.CharactersDataResponse;
+import com.chandan.android.comicsworld.model.issues.IssueDetailDataResponse;
 import com.chandan.android.comicsworld.model.issues.IssuesDataResponse;
+import com.chandan.android.comicsworld.model.movies.MovieDetailDataResponse;
 import com.chandan.android.comicsworld.model.movies.MoviesDataResponse;
 import com.chandan.android.comicsworld.model.volumes.VolumeDetailDataResponse;
 import com.chandan.android.comicsworld.model.volumes.VolumesDataResponse;
@@ -56,6 +58,11 @@ public interface ComicVineApiService {
                                                       @Query(DATA_FORMAT) String dataFormat,
                                                       @Query(PARAM_KEY) String apiKey);
 
+    @GET("issue/" + ISSUE_TYPE_CODE + "-{id}/")
+    Call<IssueDetailDataResponse> getIssueDetailData(@Path(ID) Integer issueId,
+                                                      @Query(DATA_FORMAT) String dataFormat,
+                                                      @Query(PARAM_KEY) String apiKey);
+
     @GET("volume/" + VOLUME_TYPE_CODE + "-{id}/")
     Call<VolumeDetailDataResponse> getVolumeDetailData(@Path(ID) Integer volumeId,
                                                        @Query(DATA_FORMAT) String dataFormat,
@@ -65,4 +72,9 @@ public interface ComicVineApiService {
     Call<CharacterDetailDataResponse> getCharacterDetailData(@Path(ID) Integer characterId,
                                                              @Query(DATA_FORMAT) String dataFormat,
                                                              @Query(PARAM_KEY) String apiKey);
+
+    @GET("movie/" + MOVIES_TYPE_CODE + "-{id}/")
+    Call<MovieDetailDataResponse> getMovieDetailData(@Path(ID) Integer movieId,
+                                                         @Query(DATA_FORMAT) String dataFormat,
+                                                         @Query(PARAM_KEY) String apiKey);
 }

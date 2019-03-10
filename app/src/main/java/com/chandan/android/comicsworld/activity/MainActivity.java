@@ -74,6 +74,9 @@ public class MainActivity extends AppCompatActivity
     private static final String CHARACTERS_RESPONSE_TEXT_KEY = "characterkey";
     private static final String MOVIES_RESPONSE_TEXT_KEY = "moviekey";
 
+    private static final String VOLUME_NAME_TEXT_KEY = "volumename";
+    private static final String VOLUME_IMAGE_TEXT_KEY = "volumeimage";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -235,9 +238,6 @@ public class MainActivity extends AppCompatActivity
         if (screenType == ScreenType.CHARACTERS) {
             LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             mRecyclerView.setLayoutManager(layoutManager);
-            DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
-                    layoutManager.getOrientation());
-            mRecyclerView.addItemDecoration(mDividerItemDecoration);
         } else {
             GridLayoutManager layoutManager = new GridLayoutManager(this, columnCount);
             mRecyclerView.setLayoutManager(layoutManager);
@@ -408,7 +408,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onVolumesContentClick(int clickedItemIndex) {
         VolumesData volumesData = volumesDataList.get(clickedItemIndex);
-        performIntentTransition(VolumeDetailActivity.class, volumesData.getVolumesId());
+        Intent intent = new Intent(MainActivity.this, VolumeDetailActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, volumesData.getVolumesId());
+        intent.putExtra(VOLUME_NAME_TEXT_KEY, volumesData.getVolumesName());
+        intent.putExtra(VOLUME_IMAGE_TEXT_KEY, volumesData.getVolumesImage());
+        startActivity(intent);
     }
 
     @Override

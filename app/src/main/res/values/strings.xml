@@ -27,6 +27,7 @@
     <string name="dummy_year">2007</string>
     <string name="volume_details_publisher">Publisher:</string>
     <string name="volume_details_year">Year:</string>
+    <string name="title_not_available">Name not available</string>
 
     <!-- Characters Strings -->
     <string name="characters_drawer_title">Characters</string>
