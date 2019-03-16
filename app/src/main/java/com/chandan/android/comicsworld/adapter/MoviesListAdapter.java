@@ -56,7 +56,8 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Mo
 
         moviesListHolder.movieNameTextView.setText(moviesData.getMovieName());
 
-        String releaseDate = "Released On: " + DateUtils.getFormattedDate(moviesData.getMovieReleaseDate(), "MMM dd, yyyy");
+        String releaseDate = context.getString(R.string.movie_screen_release_on) + " "
+                + DateUtils.getFormattedDate(moviesData.getMovieReleaseDate(), "MMM dd, yyyy");
         moviesListHolder.releaseDateTextView.setText(releaseDate);
 
         ImageUtils.displayImageFromUrlWithPlaceHolder(context, moviesData.getMoviesImage(),

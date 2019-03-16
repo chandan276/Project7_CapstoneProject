@@ -59,15 +59,31 @@ public class MovieDetailData {
     }
 
     public String getCharacters() {
-        return TextUtils.join(",", this.movieCharacters);
+
+        StringBuilder s = new StringBuilder(getMovieCharacters().size());
+        for (int i = 0; i < getMovieCharacters().size(); i++) {
+            String text = getMovieCharacters().get(i).getCharacterName() + "\n";
+            s.append(text);
+        }
+        return s.toString();
     }
 
     public String getConcepts() {
-        return TextUtils.join(",", this.movieConcepts);
+        StringBuilder s = new StringBuilder(getMovieConcepts().size());
+        for (int i = 0; i < getMovieConcepts().size(); i++) {
+            String text = getMovieConcepts().get(i).getConceptName() + "\n";
+            s.append(text);
+        }
+        return s.toString();
     }
 
     public String getStudios() {
-        return TextUtils.join(",", this.movieStudios);
+        StringBuilder s = new StringBuilder(getMovieStudios().size());
+        for (int i = 0; i < getMovieStudios().size(); i++) {
+            String text = getMovieStudios().get(i).getStudioName() + "\n";
+            s.append(text);
+        }
+        return s.toString();
     }
 
     public String getMovieName() {

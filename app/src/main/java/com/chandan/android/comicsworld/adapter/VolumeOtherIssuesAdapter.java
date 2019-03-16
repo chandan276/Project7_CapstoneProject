@@ -54,7 +54,7 @@ public class VolumeOtherIssuesAdapter extends RecyclerView.Adapter<VolumeOtherIs
         }
         volumeOtherIssuesHolder.otherIssueTitleTextView.setText(titleText);
 
-        String issueText = "Issue #" + otherIssues.getOtherIssueNumber();
+        String issueText = context.getString(R.string.issue_number) + otherIssues.getOtherIssueNumber();
         volumeOtherIssuesHolder.otherIssueSubtitleTextView.setText(issueText);
 
         volumeOtherIssuesHolder.favoriteImageView.setOnClickListener(new View.OnClickListener() {

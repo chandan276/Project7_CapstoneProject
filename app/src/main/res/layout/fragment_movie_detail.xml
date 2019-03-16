@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/movie_contentView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/material_card_edge_margin"
+        android:elevation="@dimen/cardview_default_elevation"
+        android:gravity="top"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/movie_details_screen"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/issue_details_header_image_height"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/a11y_movie_image" />
+            <!-- Movie info below -->
+
+            <TextView
+                android:id="@+id/movie_details_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:paddingBottom="@dimen/material_card_title_block_large_padding_top"
+                android:paddingEnd="@dimen/material_card_title_block_padding_horizontal"
+                android:paddingStart="@dimen/material_card_title_block_padding_horizontal"
+                android:paddingTop="@dimen/material_card_title_block_large_padding_top"
+                android:textColor="@color/material_color_white"
+                android:textSize="@dimen/material_card_title_block_large_title_text_size"
+                tools:text="@string/dummy_movie_name" />
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:paddingBottom="@dimen/material_card_title_block_large_padding_bottom"
+                android:paddingEnd="@dimen/material_card_title_block_padding_horizontal"
+                android:paddingStart="@dimen/material_card_title_block_padding_horizontal"
+                android:paddingTop="@dimen/material_card_title_block_large_padding_top">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movie_details_release_on"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/movie_detail_release_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/material_card_title_block_padding_horizontal"
+                    android:paddingStart="@dimen/material_card_title_block_padding_horizontal"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    tools:text="@string/movie_details_dummy_release_on" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movie_details_rating"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/movie_detail_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/material_card_title_block_padding_horizontal"
+                    android:paddingStart="@dimen/material_card_title_block_padding_horizontal"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    tools:text="@string/movie_details_dummy_rating" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movie_details_runtime"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/movie_detail_runtime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/material_card_title_block_padding_horizontal"
+                    android:paddingStart="@dimen/material_card_title_block_padding_horizontal"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    tools:text="@string/movie_details_dummy_runtime" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movie_details_Characters"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/movie_detail_charatcers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/material_card_title_block_padding_horizontal"
+                    android:paddingStart="@dimen/material_card_title_block_padding_horizontal"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    tools:text="@string/movie_details_dummy_Characters" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movie_details_Concepts"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/movie_detail_concepts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/material_card_title_block_padding_horizontal"
+                    android:paddingStart="@dimen/material_card_title_block_padding_horizontal"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    tools:text="@string/movie_details_dummy_Concepts" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movie_details_Studios"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/movie_detail_studio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/material_card_title_block_padding_horizontal"
+                    android:paddingStart="@dimen/material_card_title_block_padding_horizontal"
+                    android:textSize="@dimen/material_card_title_block_small_text_size"
+                    tools:text="@string/movie_details_dummy_Studios" />
+
+            </GridLayout>
+
+            <TextView
+                android:id="@+id/movie_details_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/material_card_supporting_text_padding_bottom"
+                android:paddingEnd="@dimen/material_card_supporting_text_padding_horizontal"
+                android:paddingStart="@dimen/material_card_supporting_text_padding_horizontal"
+                android:paddingTop="@dimen/material_card_supporting_text_padding_top"
+                android:textSize="@dimen/material_card_supporting_text_text_size"
+                tools:text="@string/lorem_ipsum" />
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</ScrollView>

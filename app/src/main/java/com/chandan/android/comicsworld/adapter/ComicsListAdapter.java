@@ -54,7 +54,7 @@ public class ComicsListAdapter extends RecyclerView.Adapter<ComicsListAdapter.Co
         Context context = comicsListHolder.contentImageView.getContext();
         IssuesData movieModel = issuesDataList.get(i);
 
-        String titleText = "Issue #" + movieModel.getIssuesNumber();
+        String titleText = context.getString(R.string.issue_number) + movieModel.getIssuesNumber();
         comicsListHolder.titleTextView.setText(titleText);
 
         String subTitleText = DateUtils.getFormattedDate(movieModel.getIssuesAddedDate(), "MMM dd, yyyy");

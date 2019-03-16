@@ -36,6 +36,8 @@
     <string name="volume_details_publisher">Publisher:</string>
     <string name="volume_details_year">Year:</string>
     <string name="title_not_available">Name not available</string>
+    <string name="issue_number">Issue #</string>
+    <string name="publisher_text">Publisher:</string>
 
     <!-- Characters Strings -->
     <string name="characters_drawer_title">Characters</string>
@@ -59,7 +61,23 @@
     <!-- Movies Strings -->
     <string name="movies_drawer_title">Movies</string>
     <string name="home_screen_movies_image_desc">Movie Image</string>
+    <string name="movie_screen_release_on">Released On:</string>
     <string name="movie_details_title">Movie Detail</string>
+    <string name="a11y_movie_image">Movie Image</string>
+    <string name="dummy_movie_name">Mr. X</string>
+    <string name="movie_details_release_on">Released on:</string>
+    <string name="movie_details_rating">Rating:</string>
+    <string name="movie_details_runtime">Runtime:</string>
+    <string name="movie_details_Characters">Characters:</string>
+    <string name="movie_details_Concepts">Concepts:</string>
+    <string name="movie_details_Studios">Studios:</string>
+    <string name="movie_details_dummy_release_on">Today</string>
+    <string name="movie_details_dummy_rating">5</string>
+    <string name="movie_details_dummy_runtime">120</string>
+    <string name="movie_details_dummy_Characters">Nothing</string>
+    <string name="movie_details_dummy_Concepts">Nothing</string>
+    <string name="movie_details_dummy_Studios">Nothing</string>
+    <string name="movie_details_minutes">mins</string>
 
     <!-- My Favorite Strings -->
     <string name="myfavorite_Menu_title">Favorites</string>

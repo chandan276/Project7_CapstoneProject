@@ -55,10 +55,10 @@ public class VolumesListAdapter extends RecyclerView.Adapter<VolumesListAdapter.
 
         volumesListHolder.volumeNameTextView.setText(volumesData.getVolumesName());
 
-        String issueText = "Issue #" + volumesData.getVolumesIssueCount();
+        String issueText = context.getString(R.string.issue_number) + volumesData.getVolumesIssueCount();
         volumesListHolder.issuesTextView.setText(issueText);
 
-        String publisherText = "Publisher: " + volumesData.getPublisherName();
+        String publisherText = context.getString(R.string.publisher_text) + " " + volumesData.getPublisherName();
         volumesListHolder.publisherNameTextView.setText(publisherText);
 
         ImageUtils.displayImageFromUrlWithPlaceHolder(context, volumesData.getVolumesImage(),
