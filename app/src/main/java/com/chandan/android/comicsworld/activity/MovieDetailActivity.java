@@ -15,6 +15,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
+        setTitle(R.string.movie_details_title);
+
         ActionBar actionBar = this.getSupportActionBar();
 
         // Set the action bar back button to look like an up button

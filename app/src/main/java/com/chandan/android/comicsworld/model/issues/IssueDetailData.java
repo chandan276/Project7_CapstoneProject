@@ -14,6 +14,7 @@ public class IssueDetailData {
     private final static String Volume_Name_Tag = "volume";
     private final static String Image_Tag = "image";
     private final static String Character_Credit_Tag = "character_credits";
+    private final static String Description_Tag = "description";
 
     @SerializedName(Name_Tag)
     private String issueName;
@@ -27,6 +28,9 @@ public class IssueDetailData {
     @SerializedName(InStore_Date_Tag)
     private String issueStoreDate;
 
+    @SerializedName(Description_Tag)
+    private String issueDescription;
+
     @SerializedName(Volume_Name_Tag)
     private VolumeDetail volumeDetail;
 
@@ -36,11 +40,12 @@ public class IssueDetailData {
     @SerializedName(Character_Credit_Tag)
     private List<CharacterCredit> characterCredits;
 
-    public IssueDetailData(String issueName, String issueNumberName, String issueCoverData, String issueStoreDate, VolumeDetail volumeDetail, ImagesData imagesData, List<CharacterCredit> characterCredits) {
+    public IssueDetailData(String issueName, String issueNumberName, String issueCoverData, String issueStoreDate, String issueDescription, VolumeDetail volumeDetail, ImagesData imagesData, List<CharacterCredit> characterCredits) {
         this.issueName = issueName;
         this.issueNumberName = issueNumberName;
         this.issueCoverData = issueCoverData;
         this.issueStoreDate = issueStoreDate;
+        this.issueDescription = issueDescription;
         this.volumeDetail = volumeDetail;
         this.imagesData = imagesData;
         this.characterCredits = characterCredits;
@@ -78,6 +83,14 @@ public class IssueDetailData {
         this.issueStoreDate = issueStoreDate;
     }
 
+    public String getIssueDescription() {
+        return issueDescription;
+    }
+
+    public void setIssueDescription(String issueDescription) {
+        this.issueDescription = issueDescription;
+    }
+
     public VolumeDetail getVolumeDetail() {
         return volumeDetail;
     }
@@ -102,7 +115,7 @@ public class IssueDetailData {
         this.characterCredits = characterCredits;
     }
 
-    private class VolumeDetail {
+    public class VolumeDetail {
         private final static String Name_Tag = "name";
 
         @SerializedName(Name_Tag)
@@ -117,21 +130,21 @@ public class IssueDetailData {
         }
     }
 
-    private class CharacterCredit {
+    public class CharacterCredit {
         private final static String Id_Tag = "id";
         private final static String Name_Tag = "name";
 
         @SerializedName(Id_Tag)
-        private String charcterCreditId;
+        private Integer charcterCreditId;
 
         @SerializedName(Name_Tag)
         private String charcterCreditName;
 
-        public String getCharcterCreditId() {
+        public Integer getCharcterCreditId() {
             return charcterCreditId;
         }
 
-        public void setCharcterCreditId(String charcterCreditId) {
+        public void setCharcterCreditId(Integer charcterCreditId) {
             this.charcterCreditId = charcterCreditId;
         }
 

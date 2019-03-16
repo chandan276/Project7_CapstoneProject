@@ -1,6 +1,7 @@
 package com.chandan.android.comicsworld.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.chandan.android.comicsworld.R;
+import com.chandan.android.comicsworld.activity.CharacterDetailActivity;
+import com.chandan.android.comicsworld.activity.IssueDetailActivity;
 import com.chandan.android.comicsworld.adapter.VolumeOtherIssuesAdapter;
 import com.chandan.android.comicsworld.model.volumes.VolumeDetailData;
 
@@ -56,6 +59,8 @@ public class VolumeOtherIssuesFragment extends Fragment implements VolumeOtherIs
 
     @Override
     public void onOtherIssueClick(int clickedItemIndex) {
-
+        Intent intent = new Intent(getActivity(), IssueDetailActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, volumeDetailData.getOtherIssues().get(clickedItemIndex).getOtherIssueId());
+        startActivity(intent);
     }
 }

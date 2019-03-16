@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity
     private static final String CHARACTERS_RESPONSE_TEXT_KEY = "characterkey";
     private static final String MOVIES_RESPONSE_TEXT_KEY = "moviekey";
 
+    private static final String ISSUE_IMAGE_TEXT_KEY = "issueimage";
     private static final String VOLUME_NAME_TEXT_KEY = "volumename";
     private static final String VOLUME_IMAGE_TEXT_KEY = "volumeimage";
 
@@ -402,7 +403,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onComicsContentClick(int clickedItemIndex) {
         IssuesData issuesData = issuesDataList.get(clickedItemIndex);
-        performIntentTransition(IssueDetailActivity.class, issuesData.getIssuesId());
+        Intent intent = new Intent(MainActivity.this, IssueDetailActivity.class);
+        intent.putExtra(Intent.EXTRA_TEXT, issuesData.getIssuesId());
+        intent.putExtra(ISSUE_IMAGE_TEXT_KEY, issuesData.getComicImage());
+        startActivity(intent);
     }
 
     @Override

@@ -10,8 +10,16 @@
 
     <!-- Issues Strings -->
     <string name="issues_drawer_title">Issues</string>
+    <string name="issue_details_title">Issue Detail</string>
     <string name="home_screen_issues_image_desc">Comic Image</string>
     <string name="home_screen_favorite_icon_desc">Favorite Image</string>
+    <string name="issue_details_activity_title">Issue details:</string>
+    <string name="issue_details_cover_date">Cover date:</string>
+    <string name="issue_details_store_date">Store date:</string>
+    <string name="issue_details_characters">Characters:</string>
+    <string name="a11y_issue_cover">Issue cover</string>
+    <string name="dummy_issue_name" translatable="false">Road\'s End</string>
+    <string name="dummy_issue_details_header" translatable="false">The Walking Dead #168</string>
 
     <!-- Volumes Strings -->
     <string name="volumes_drawer_title">Volumes</string>
@@ -48,9 +56,10 @@
     <string name="male_gender">Male</string>
     <string name="female_gender">Female</string>
 
-    <!-- Videos Strings -->
+    <!-- Movies Strings -->
     <string name="movies_drawer_title">Movies</string>
     <string name="home_screen_movies_image_desc">Movie Image</string>
+    <string name="movie_details_title">Movie Detail</string>
 
     <!-- My Favorite Strings -->
     <string name="myfavorite_Menu_title">Favorites</string>
@@ -67,7 +76,4 @@
     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been
     the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of
     type and scrambled it to make a type specimen book.</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
