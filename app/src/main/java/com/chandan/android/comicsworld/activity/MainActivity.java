@@ -89,10 +89,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(ISSUE_RESPONSE_TEXT_KEY, new ArrayList<IssuesData>(issuesDataList));
-        outState.putParcelableArrayList(VOLUME_RESPONSE_TEXT_KEY, new ArrayList<VolumesData>(volumesDataList));
-        outState.putParcelableArrayList(CHARACTERS_RESPONSE_TEXT_KEY, new ArrayList<CharactersData>(charactersDataList));
-        outState.putParcelableArrayList(MOVIES_RESPONSE_TEXT_KEY, new ArrayList<MoviesData>(moviesDataList));
     }
 
     @Override

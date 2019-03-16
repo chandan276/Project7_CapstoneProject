@@ -17,11 +17,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.chandan.android.comicsworld.R;
-import com.chandan.android.comicsworld.fragment.CharacterGalleryFragment;
-import com.chandan.android.comicsworld.fragment.CharacterInfoFragment;
 import com.chandan.android.comicsworld.fragment.IssueCharactersFragment;
 import com.chandan.android.comicsworld.fragment.IssueDetailFragment;
-import com.chandan.android.comicsworld.model.characters.CharacterDetailDataResponse;
 import com.chandan.android.comicsworld.model.issues.IssueDetailData;
 import com.chandan.android.comicsworld.model.issues.IssueDetailDataResponse;
 import com.chandan.android.comicsworld.utilities.NetworkUtils;
@@ -47,8 +44,6 @@ public class IssueDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_detail);
-
-        setTitle(R.string.issue_details_title);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

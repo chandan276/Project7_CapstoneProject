@@ -2,29 +2,23 @@ package com.chandan.android.comicsworld.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chandan.android.comicsworld.R;
-import com.chandan.android.comicsworld.fragment.CharacterGalleryFragment;
-import com.chandan.android.comicsworld.fragment.CharacterInfoFragment;
 import com.chandan.android.comicsworld.model.characters.CharacterDetailData;
 import com.chandan.android.comicsworld.model.characters.CharacterDetailDataResponse;
+import com.chandan.android.comicsworld.utilities.DateUtils;
+import com.chandan.android.comicsworld.utilities.ImageUtils;
 import com.chandan.android.comicsworld.utilities.NetworkUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,8 +35,6 @@ public class CharacterDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_character_detail);
-
-        setTitle(R.string.characters_details_title);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,46 +69,6 @@ public class CharacterDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-
-        CharacterInfoFragment characterDetailFragment = new CharacterInfoFragment();
-        characterDetailFragment.setCharacterData(characterDetailDataList);
-        adapter.addFragment(characterDetailFragment, "INFO");
-
-        adapter.addFragment(new CharacterGalleryFragment(), "GALLERY");
-        viewPager.setAdapter(adapter);
-    }
-
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
-
     private void getCharacterDetails() {
         showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
         NetworkUtils.fetchCharacterDetailsData(characterId, new Callback<CharacterDetailDataResponse>() {
@@ -124,7 +76,7 @@ public class CharacterDetailActivity extends AppCompatActivity {
             public void onResponse(Call<CharacterDetailDataResponse> call, Response<CharacterDetailDataResponse> response) {
                 if (response.body() != null) {
                     characterDetailDataList = response.body().getResults();
-                    setupViewPager();
+                    setupUI();
                 } else {
                     showErrorMessage(getString(R.string.network_error));
                 }
@@ -139,12 +91,41 @@ public class CharacterDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void setupViewPager() {
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        setupViewPager(viewPager);
+    private void setupUI() {
+        ImageView characterImageView = (ImageView) findViewById(R.id.character_details_screen);
+        ImageUtils.displayImageFromUrlWithPlaceHolder(characterImageView.getContext(), characterDetailDataList.getCharacterImage(),
+                characterImageView, R.drawable.image_placeholder, R.drawable.error_image_loading);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        TextView superNameTextField = (TextView) findViewById(R.id.character_details_name);
+        superNameTextField.setText(characterDetailDataList.getSuperName());
+
+        TextView realNameTextField = (TextView) findViewById(R.id.character_detail_real_name);
+        realNameTextField.setText(characterDetailDataList.getRealName());
+
+        TextView aliasesTextField = (TextView) findViewById(R.id.character_detail_aliases);
+        aliasesTextField.setText(characterDetailDataList.getAliases());
+
+        TextView dobTextField = (TextView) findViewById(R.id.character_detail_birthdate);
+        if (characterDetailDataList.getBirthday() == null) {
+            dobTextField.setText(R.string.not_available);
+        } else {
+            String dateText = DateUtils.getFormattedDate(characterDetailDataList.getBirthday(), "MMM dd, yyyy");
+            dobTextField.setText(dateText);
+        }
+
+        TextView originTextField = (TextView) findViewById(R.id.character_detail_origin);
+        originTextField.setText(characterDetailDataList.getOriginName());
+
+        TextView genderTextField = (TextView) findViewById(R.id.character_detail_gender);
+        Integer gender = characterDetailDataList.getGender();
+        if (gender == 1) {
+            genderTextField.setText(R.string.male_gender);
+        } else {
+            genderTextField.setText(R.string.female_gender);
+        }
+
+        TextView descriptionTextField = (TextView) findViewById(R.id.character_details_description);
+        descriptionTextField.setText(characterDetailDataList.getDescription());
     }
 
     private void showErrorMessage(String error) {

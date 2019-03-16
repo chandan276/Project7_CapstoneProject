@@ -47,8 +47,6 @@ public class VolumeDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_volume_detail);
 
-        setTitle(R.string.volumes_details_title);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
