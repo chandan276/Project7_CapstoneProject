@@ -4,7 +4,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +23,7 @@ import com.chandan.android.comicsworld.adapter.CharactersListAdapter;
 import com.chandan.android.comicsworld.adapter.ComicsListAdapter;
 import com.chandan.android.comicsworld.adapter.MoviesListAdapter;
 import com.chandan.android.comicsworld.adapter.VolumesListAdapter;
+import com.chandan.android.comicsworld.database.AppDatabase;
 import com.chandan.android.comicsworld.model.characters.CharactersData;
 import com.chandan.android.comicsworld.model.characters.CharactersDataResponse;
 import com.chandan.android.comicsworld.model.issues.IssuesData;
@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ComicsListAdapter.ComicsContentClickListener,
         VolumesListAdapter.VolumesClickListener, MoviesListAdapter.MoviesClickListener, CharactersListAdapter.CharacterContentClickListener {
 
+    private AppDatabase mDb;
     private RecyclerView mRecyclerView;
 
     private ComicsListAdapter issuesListAdapter;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity
 
     private KProgressHUD progressIndicator;
     ScreenType screenType = ScreenType.ISSUES;
+    private String currentScreenTitle = "Issues";
 
     private List<IssuesData> issuesDataList = new ArrayList<>();
     private List<VolumesData> volumesDataList = new ArrayList<>();
@@ -73,8 +75,10 @@ public class MainActivity extends AppCompatActivity
     private static final String VOLUME_RESPONSE_TEXT_KEY = "volumekey";
     private static final String CHARACTERS_RESPONSE_TEXT_KEY = "characterkey";
     private static final String MOVIES_RESPONSE_TEXT_KEY = "moviekey";
+    private static final String SCREEN_TYPE_TEXT_KEY = "screentype";
+    private static final String SCREEN_TITLE_TEXT_KEY = "screentitle";
 
-    private static final String ISSUE_IMAGE_TEXT_KEY = "issueimage";
+    private static final String ISSUE_DATA_TEXT_KEY = "issuedata";
     private static final String VOLUME_NAME_TEXT_KEY = "volumename";
     private static final String VOLUME_IMAGE_TEXT_KEY = "volumeimage";
 
@@ -83,12 +87,50 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mDb = AppDatabase.getInstance(getApplicationContext());
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(ISSUE_RESPONSE_TEXT_KEY)) {
+                issuesDataList.clear();
+                issuesDataList = savedInstanceState.getParcelableArrayList(ISSUE_RESPONSE_TEXT_KEY);
+            }
+
+            if (savedInstanceState.containsKey(VOLUME_RESPONSE_TEXT_KEY)) {
+                volumesDataList.clear();
+                volumesDataList = savedInstanceState.getParcelableArrayList(VOLUME_RESPONSE_TEXT_KEY);
+            }
+
+            if (savedInstanceState.containsKey(CHARACTERS_RESPONSE_TEXT_KEY)) {
+                charactersDataList.clear();
+                charactersDataList = savedInstanceState.getParcelableArrayList(CHARACTERS_RESPONSE_TEXT_KEY);
+            }
+
+            if (savedInstanceState.containsKey(MOVIES_RESPONSE_TEXT_KEY)) {
+                moviesDataList.clear();
+                moviesDataList = savedInstanceState.getParcelableArrayList(MOVIES_RESPONSE_TEXT_KEY);
+            }
+
+            if (savedInstanceState.containsKey(SCREEN_TYPE_TEXT_KEY)) {
+                screenType = (ScreenType) savedInstanceState.getSerializable(SCREEN_TYPE_TEXT_KEY);
+            }
+
+            if (savedInstanceState.containsKey(SCREEN_TITLE_TEXT_KEY)) {
+                currentScreenTitle = savedInstanceState.getString(SCREEN_TITLE_TEXT_KEY);
+            }
+        }
         setupSideDrawer();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList(ISSUE_RESPONSE_TEXT_KEY, new ArrayList<IssuesData>(issuesDataList));
+        outState.putParcelableArrayList(VOLUME_RESPONSE_TEXT_KEY, new ArrayList<VolumesData>(volumesDataList));
+        outState.putParcelableArrayList(CHARACTERS_RESPONSE_TEXT_KEY, new ArrayList<CharactersData>(charactersDataList));
+        outState.putParcelableArrayList(MOVIES_RESPONSE_TEXT_KEY, new ArrayList<MoviesData>(moviesDataList));
+        outState.putSerializable(SCREEN_TYPE_TEXT_KEY, screenType);
+        outState.putString(SCREEN_TITLE_TEXT_KEY, currentScreenTitle);
     }
 
     @Override
@@ -178,26 +220,31 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_issues:
                 setTitle(R.string.issues_drawer_title);
+                currentScreenTitle = getString(R.string.issues_drawer_title);
                 screenType = ScreenType.ISSUES;
                 break;
 
             case R.id.nav_volumes:
                 setTitle(R.string.volumes_drawer_title);
+                currentScreenTitle = getString(R.string.volumes_drawer_title);
                 screenType = ScreenType.VOLUMES;
                 break;
 
             case R.id.nav_characters:
                 setTitle(R.string.characters_drawer_title);
+                currentScreenTitle = getString(R.string.characters_drawer_title);
                 screenType = ScreenType.CHARACTERS;
                 break;
 
             case R.id.nav_movies:
                 setTitle(R.string.movies_drawer_title);
+                currentScreenTitle = getString(R.string.movies_drawer_title);
                 screenType = ScreenType.MOVIES;
                 break;
 
             case R.id.nav_favorite:
                 setTitle(R.string.myfavorite_drawer_title);
+                currentScreenTitle = getString(R.string.myfavorite_drawer_title);
                 screenType = ScreenType.FAVORITE;
                 break;
         }
@@ -223,7 +270,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_issues);
-        setTitle(R.string.issues_drawer_title);
+        setTitle(currentScreenTitle);
         loadRecyclerView();
     }
 
@@ -248,30 +295,49 @@ public class MainActivity extends AppCompatActivity
     private void setRespectiveAdapter() {
         switch (screenType) {
             case ISSUES:
-                issuesListAdapter = new ComicsListAdapter(this);
+                issuesListAdapter = new ComicsListAdapter(this, mDb, this);
                 mRecyclerView.setAdapter(issuesListAdapter);
-                getDataForIssues(null);
+                if (issuesDataList.size() == 0) {
+                    getDataForIssues(null);
+                } else {
+                    issuesListAdapter.updateComicsData(issuesDataList);
+                }
                 break;
 
             case VOLUMES:
                 volumesListAdapter = new VolumesListAdapter(this);
                 mRecyclerView.setAdapter(volumesListAdapter);
-                getDataForVolumes(null);
+                if (volumesDataList.size() == 0) {
+                    getDataForVolumes(null);
+                } else {
+                    volumesListAdapter.updateVolumesData(volumesDataList);
+                }
                 break;
 
             case CHARACTERS:
                 charactersListAdapter = new CharactersListAdapter(this);
                 mRecyclerView.setAdapter(charactersListAdapter);
-                getDataForCharacters(null);
+                if (charactersDataList.size() == 0) {
+                    getDataForCharacters(null);
+                } else {
+                    charactersListAdapter.updateCharactersData(charactersDataList);
+                }
                 break;
 
             case MOVIES:
                 moviesListAdapter = new MoviesListAdapter(this);
                 mRecyclerView.setAdapter(moviesListAdapter);
-                getDataForMovies(null);
+                if (moviesDataList.size() == 0) {
+                    getDataForMovies(null);
+                } else {
+                    moviesListAdapter.updateVolumesData(moviesDataList);
+                }
                 break;
 
             case FAVORITE:
+                issuesListAdapter = new ComicsListAdapter(this, mDb, this);
+                mRecyclerView.setAdapter(issuesListAdapter);
+                issuesListAdapter.getMyFavoriteIssuesList();
                 break;
         }
     }
@@ -400,8 +466,7 @@ public class MainActivity extends AppCompatActivity
     public void onComicsContentClick(int clickedItemIndex) {
         IssuesData issuesData = issuesDataList.get(clickedItemIndex);
         Intent intent = new Intent(MainActivity.this, IssueDetailActivity.class);
-        intent.putExtra(Intent.EXTRA_TEXT, issuesData.getIssuesId());
-        intent.putExtra(ISSUE_IMAGE_TEXT_KEY, issuesData.getComicImage());
+        intent.putExtra(ISSUE_DATA_TEXT_KEY, issuesData);
         startActivity(intent);
     }
 

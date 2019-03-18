@@ -7,7 +7,7 @@ import com.chandan.android.comicsworld.model.commons.ImagesData;
 import com.chandan.android.comicsworld.model.commons.PublisherData;
 import com.google.gson.annotations.SerializedName;
 
-public class VolumesData {
+public class VolumesData implements Parcelable {
 
     private final static String Id_Tag = "id";
     private final static String Name_Tag = "name";
@@ -29,9 +29,6 @@ public class VolumesData {
     @SerializedName(Issue_Number_Tag)
     private Integer volumesIssueCount;
 
-    @SerializedName(Description_Tag)
-    private String volumesDescription;
-
     @SerializedName(Publisher_Name_Tag)
     private PublisherData publisherData;
 
@@ -41,15 +38,68 @@ public class VolumesData {
     public VolumesData() {
     }
 
-    public VolumesData(Integer volumesId, String volumesName, String volumesAddedDate, Integer volumesIssueCount, String volumesDescription, PublisherData publisherData, ImagesData imagesData) {
+    public VolumesData(Integer volumesId, String volumesName, String volumesAddedDate, Integer volumesIssueCount, PublisherData publisherData, ImagesData imagesData) {
         this.volumesId = volumesId;
         this.volumesName = volumesName;
         this.volumesAddedDate = volumesAddedDate;
         this.volumesIssueCount = volumesIssueCount;
-        this.volumesDescription = volumesDescription;
         this.publisherData = publisherData;
         this.imagesData = imagesData;
     }
+
+    protected VolumesData(Parcel in) {
+        if (in.readByte() == 0) {
+            volumesId = null;
+        } else {
+            volumesId = in.readInt();
+        }
+        volumesName = in.readString();
+        volumesAddedDate = in.readString();
+        if (in.readByte() == 0) {
+            volumesIssueCount = null;
+        } else {
+            volumesIssueCount = in.readInt();
+        }
+        publisherData = in.readParcelable(PublisherData.class.getClassLoader());
+        imagesData = in.readParcelable(ImagesData.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (volumesId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(volumesId);
+        }
+        dest.writeString(volumesName);
+        dest.writeString(volumesAddedDate);
+        if (volumesIssueCount == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(volumesIssueCount);
+        }
+        dest.writeParcelable(publisherData, flags);
+        dest.writeParcelable(imagesData, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<VolumesData> CREATOR = new Creator<VolumesData>() {
+        @Override
+        public VolumesData createFromParcel(Parcel in) {
+            return new VolumesData(in);
+        }
+
+        @Override
+        public VolumesData[] newArray(int size) {
+            return new VolumesData[size];
+        }
+    };
 
     public String getPublisherName() {
         return this.publisherData.getPublisherName();
@@ -89,14 +139,6 @@ public class VolumesData {
 
     public void setVolumesIssueCount(Integer volumesIssueCount) {
         this.volumesIssueCount = volumesIssueCount;
-    }
-
-    public String getVolumesDescription() {
-        return volumesDescription;
-    }
-
-    public void setVolumesDescription(String volumesDescription) {
-        this.volumesDescription = volumesDescription;
     }
 
     public PublisherData getPublisherData() {

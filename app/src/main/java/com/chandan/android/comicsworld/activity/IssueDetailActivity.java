@@ -1,7 +1,10 @@
 package com.chandan.android.comicsworld.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,10 +20,16 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.chandan.android.comicsworld.R;
+import com.chandan.android.comicsworld.database.AppDatabase;
+import com.chandan.android.comicsworld.database.AppExecutors;
+import com.chandan.android.comicsworld.database.FavoriteIssues;
+import com.chandan.android.comicsworld.database.IssueDetailViewModel;
+import com.chandan.android.comicsworld.database.IssueDetailViewModelFactory;
 import com.chandan.android.comicsworld.fragment.IssueCharactersFragment;
 import com.chandan.android.comicsworld.fragment.IssueDetailFragment;
 import com.chandan.android.comicsworld.model.issues.IssueDetailData;
 import com.chandan.android.comicsworld.model.issues.IssueDetailDataResponse;
+import com.chandan.android.comicsworld.model.issues.IssuesData;
 import com.chandan.android.comicsworld.utilities.NetworkUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
@@ -33,17 +42,22 @@ import retrofit2.Response;
 
 public class IssueDetailActivity extends AppCompatActivity {
 
-    private Integer issueId;
-    private String issueImageUrl;
     private KProgressHUD progressIndicator;
     private IssueDetailData issueDetailData;
+    private IssuesData issuesData;
 
-    private static final String ISSUE_IMAGE_TEXT_KEY = "issueimage";
+    private Menu menu;
+    private AppDatabase mDb;
+
+    private static final String ISSUE_DATA_TEXT_KEY = "issuedata";
+    private static final String ISSUE_DETAIL_RESPONSE_TEXT_KEY = "issuedetail";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_detail);
+
+        mDb = AppDatabase.getInstance(getApplicationContext());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -56,22 +70,37 @@ public class IssueDetailActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
-        if (intent.hasExtra(Intent.EXTRA_TEXT)) {
-            issueId = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
-            issueImageUrl = intent.getStringExtra(ISSUE_IMAGE_TEXT_KEY);
+        if (intent.hasExtra(ISSUE_DATA_TEXT_KEY)) {
+            issuesData = intent.getParcelableExtra(ISSUE_DATA_TEXT_KEY);
+        }
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(ISSUE_DETAIL_RESPONSE_TEXT_KEY)) {
+                issueDetailData = savedInstanceState.getParcelable(ISSUE_DETAIL_RESPONSE_TEXT_KEY);
+            }
+
+            if (savedInstanceState.containsKey(ISSUE_DATA_TEXT_KEY)) {
+                issuesData = savedInstanceState.getParcelable(ISSUE_DATA_TEXT_KEY);
+            }
+            setupViewPager();
+        } else {
+            getIssueDetails();
         }
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        getIssueDetails();
+        outState.putParcelable(ISSUE_DATA_TEXT_KEY, issuesData);
+        outState.putParcelable(ISSUE_DETAIL_RESPONSE_TEXT_KEY, issueDetailData);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.issue_detail_favorite, menu);
+        //loadFavoriteButton();
         return true;
     }
 
@@ -82,16 +111,72 @@ public class IssueDetailActivity extends AppCompatActivity {
         if (id == android.R.id.home) {
             NavUtils.navigateUpFromSameTask(this);
         }  else if (id == R.id.action_my_favorite) {
+            IssueDetailViewModelFactory factory = new IssueDetailViewModelFactory(mDb, issuesData.getIssuesId());
+            final IssueDetailViewModel viewModel
+                    = ViewModelProviders.of(this, factory).get(IssueDetailViewModel.class);
 
+            viewModel.getTask().observe(this, new Observer<FavoriteIssues>() {
+                @Override
+                public void onChanged(@Nullable final FavoriteIssues favoriteIssues) {
+                    viewModel.getTask().removeObserver(this);
+                    MenuItem menuItem = menu.findItem(R.id.action_my_favorite);
+
+                    if (favoriteIssues == null) {
+
+                        final FavoriteIssues favoriteIssue = new FavoriteIssues(issuesData.getIssuesId(),
+                                issuesData.getIssuesName(),
+                                issuesData.getIssuesAddedDate(), issuesData.getImagesData().getMediumImageUrl(),
+                                issuesData.getIssuesNumber());
+
+                        menuItem.setIcon(R.drawable.ic_favorite_white_selected);
+
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDb.favoriteDao().insertTask(favoriteIssue);
+                            }
+                        });
+                    } else {
+
+                        menuItem.setIcon(R.drawable.ic_favorite_white_unselected);
+
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDb.favoriteDao().deleteTask(favoriteIssues);
+                            }
+                        });
+                    }
+                }
+            });
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadFavoriteButton() {
+        IssueDetailViewModelFactory factory = new IssueDetailViewModelFactory(mDb, issuesData.getIssuesId());
+        final IssueDetailViewModel viewModel
+                = ViewModelProviders.of(this, factory).get(IssueDetailViewModel.class);
+
+        viewModel.getTask().observe(this, new Observer<FavoriteIssues>() {
+            @Override
+            public void onChanged(@Nullable FavoriteIssues favoriteIssues) {
+                viewModel.getTask().removeObserver(this);
+                MenuItem menuItem = menu.findItem(R.id.action_my_favorite);
+                if (favoriteIssues == null) {
+                    menuItem.setIcon(R.drawable.ic_favorite_white_unselected);
+                } else {
+                    menuItem.setIcon(R.drawable.ic_favorite_white_selected);
+                }
+            }
+        });
     }
 
     private void setupViewPager(ViewPager viewPager) {
         IssueDetailActivity.ViewPagerAdapter adapter = new IssueDetailActivity.ViewPagerAdapter(getSupportFragmentManager());
 
         IssueDetailFragment issueDetailFragment = new IssueDetailFragment();
-        issueDetailFragment.setIssueData(this.issueDetailData, issueImageUrl);
+        issueDetailFragment.setIssueData(this.issueDetailData, issuesData.getComicImage());
         adapter.addFragment(issueDetailFragment, "DETAILS");
 
         IssueCharactersFragment issueCharacterFragment = new IssueCharactersFragment();
@@ -131,7 +216,7 @@ public class IssueDetailActivity extends AppCompatActivity {
 
     private void getIssueDetails() {
         showProgressIndicator(this, getString(R.string.progress_indicator_home_label), getString(R.string.progress_indicator_home_detail_label), true);
-        NetworkUtils.fetchIssueDetailData(issueId, new Callback<IssueDetailDataResponse>() {
+        NetworkUtils.fetchIssueDetailData(issuesData.getIssuesId(), new Callback<IssueDetailDataResponse>() {
             @Override
             public void onResponse(Call<IssueDetailDataResponse> call, Response<IssueDetailDataResponse> response) {
                 if (response.body() != null) {

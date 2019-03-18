@@ -2,6 +2,7 @@ package com.chandan.android.comicsworld.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -23,6 +24,10 @@ public class VolumeInfoFragment extends Fragment {
     private String volumeName;
     private String volumeImageUrl;
 
+    private static final String VOLUME_DETAIL_RESPONSE_TEXT_KEY = "moviedetail2";
+    private static final String VOLUME_NAME_TEXT_KEY = "volumename2";
+    private static final String VOLUME_IMAGE_TEXT_KEY = "volumeimage2";
+
     public VolumeInfoFragment() {
         // Required empty public constructor
     }
@@ -30,8 +35,22 @@ public class VolumeInfoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (savedInstanceState != null) {
+            volumeDetailData = savedInstanceState.getParcelable(VOLUME_DETAIL_RESPONSE_TEXT_KEY);
+            volumeName = savedInstanceState.getString(VOLUME_NAME_TEXT_KEY);
+            volumeImageUrl = savedInstanceState.getString(VOLUME_IMAGE_TEXT_KEY);
+        }
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_volume_info, container, false);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle currentState) {
+        currentState.putParcelable(VOLUME_DETAIL_RESPONSE_TEXT_KEY, volumeDetailData);
+        currentState.putString(VOLUME_NAME_TEXT_KEY, volumeName);
+        currentState.putString(VOLUME_IMAGE_TEXT_KEY, volumeImageUrl);
     }
 
     @Override

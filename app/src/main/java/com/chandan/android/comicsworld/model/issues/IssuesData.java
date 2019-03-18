@@ -6,11 +6,10 @@ import android.os.Parcelable;
 import com.chandan.android.comicsworld.model.commons.ImagesData;
 import com.google.gson.annotations.SerializedName;
 
-public class IssuesData {
+public class IssuesData implements Parcelable {
 
     private final static String Id_Tag = "id";
     private final static String Name_Tag = "name";
-    private final static String Desription_Tag = "description";
     private final static String Date_Added_Tag = "date_added";
     private final static String Issue_Number_Tag = "issue_number";
     private final static String Image_Data_Tag = "image";
@@ -20,9 +19,6 @@ public class IssuesData {
 
     @SerializedName(Name_Tag)
     private String issuesName;
-
-    @SerializedName(Desription_Tag)
-    private String issuesDescription;
 
     @SerializedName(Date_Added_Tag)
     private String issuesAddedDate;
@@ -35,14 +31,56 @@ public class IssuesData {
 
     public IssuesData() { }
 
-    public IssuesData(Integer issuesId, String issuesName, String issuesDescription, String issuesAddedDate, ImagesData imagesData, String issuesNumber) {
+    public IssuesData(Integer issuesId, String issuesName, String issuesAddedDate, ImagesData imagesData, String issuesNumber) {
         this.issuesId = issuesId;
         this.issuesName = issuesName;
-        this.issuesDescription = issuesDescription;
         this.issuesAddedDate = issuesAddedDate;
         this.imagesData = imagesData;
         this.issuesNumber = issuesNumber;
     }
+
+    protected IssuesData(Parcel in) {
+        if (in.readByte() == 0) {
+            issuesId = null;
+        } else {
+            issuesId = in.readInt();
+        }
+        issuesName = in.readString();
+        issuesAddedDate = in.readString();
+        imagesData = in.readParcelable(ImagesData.class.getClassLoader());
+        issuesNumber = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        if (issuesId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeInt(issuesId);
+        }
+        dest.writeString(issuesName);
+        dest.writeString(issuesAddedDate);
+        dest.writeParcelable(imagesData, flags);
+        dest.writeString(issuesNumber);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<IssuesData> CREATOR = new Creator<IssuesData>() {
+        @Override
+        public IssuesData createFromParcel(Parcel in) {
+            return new IssuesData(in);
+        }
+
+        @Override
+        public IssuesData[] newArray(int size) {
+            return new IssuesData[size];
+        }
+    };
 
     public String getComicImage() {
         return this.imagesData.getMediumImageUrl();
@@ -62,14 +100,6 @@ public class IssuesData {
 
     public void setIssuesName(String issuesName) {
         this.issuesName = issuesName;
-    }
-
-    public String getIssuesDescription() {
-        return issuesDescription;
-    }
-
-    public void setIssuesDescription(String issuesDescription) {
-        this.issuesDescription = issuesDescription;
     }
 
     public String getIssuesAddedDate() {

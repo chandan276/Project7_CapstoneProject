@@ -1,5 +1,7 @@
 package com.chandan.android.comicsworld.model.movies;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.chandan.android.comicsworld.model.commons.ImagesData;
@@ -7,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class MovieDetailData {
+public class MovieDetailData implements Parcelable {
 
     private final static String Name_Tag = "name";
     private final static String Release_Date_Tag = "release_date";
@@ -57,6 +59,42 @@ public class MovieDetailData {
         this.movieConcepts = movieConcepts;
         this.movieStudios = movieStudios;
     }
+
+    protected MovieDetailData(Parcel in) {
+        movieName = in.readString();
+        movieReleaseDate = in.readString();
+        imagesData = in.readParcelable(ImagesData.class.getClassLoader());
+        movieDescription = in.readString();
+        movieRating = in.readString();
+        movieRuntime = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(movieName);
+        dest.writeString(movieReleaseDate);
+        dest.writeParcelable(imagesData, flags);
+        dest.writeString(movieDescription);
+        dest.writeString(movieRating);
+        dest.writeString(movieRuntime);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<MovieDetailData> CREATOR = new Creator<MovieDetailData>() {
+        @Override
+        public MovieDetailData createFromParcel(Parcel in) {
+            return new MovieDetailData(in);
+        }
+
+        @Override
+        public MovieDetailData[] newArray(int size) {
+            return new MovieDetailData[size];
+        }
+    };
 
     public String getCharacters() {
 

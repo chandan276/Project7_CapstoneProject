@@ -56,6 +56,14 @@ dependencies {
     //Material Values Dependency
     implementation 'blue.aodev:material-values:1.1.1'
 
+    //ROOM Dependency
+    implementation "android.arch.persistence.room:runtime:1.1.1"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+
+    //LiveData dependencies
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
+
     //Firebase dependency
     //TODO: Include Analytics and Crashlytics dependency
 }

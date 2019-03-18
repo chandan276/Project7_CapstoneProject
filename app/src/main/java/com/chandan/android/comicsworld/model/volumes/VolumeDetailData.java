@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class VolumeDetailData {
+public class VolumeDetailData implements Parcelable {
 
     private final static String Start_Year_Tag = "start_year";
     private final static String Publisher_Tag = "publisher";
@@ -35,6 +35,36 @@ public class VolumeDetailData {
         this.description = description;
         this.otherIssues = otherIssues;
     }
+
+    protected VolumeDetailData(Parcel in) {
+        startYear = in.readString();
+        publisherData = in.readParcelable(PublisherData.class.getClassLoader());
+        description = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(startYear);
+        dest.writeParcelable(publisherData, flags);
+        dest.writeString(description);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<VolumeDetailData> CREATOR = new Creator<VolumeDetailData>() {
+        @Override
+        public VolumeDetailData createFromParcel(Parcel in) {
+            return new VolumeDetailData(in);
+        }
+
+        @Override
+        public VolumeDetailData[] newArray(int size) {
+            return new VolumeDetailData[size];
+        }
+    };
 
     public String getStartYear() {
         return startYear;

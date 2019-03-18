@@ -14,10 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chandan.android.comicsworld.R;
-import com.chandan.android.comicsworld.model.issues.IssueDetailData;
 import com.chandan.android.comicsworld.model.movies.MovieDetailData;
 import com.chandan.android.comicsworld.model.movies.MovieDetailDataResponse;
-import com.chandan.android.comicsworld.model.volumes.VolumeDetailDataResponse;
 import com.chandan.android.comicsworld.utilities.ImageUtils;
 import com.chandan.android.comicsworld.utilities.NetworkUtils;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -31,6 +29,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     private Integer movieId;
     private MovieDetailData movieDetailData;
     private KProgressHUD progressIndicator;
+
+    private static final String MOVIE_DETAIL_RESPONSE_TEXT_KEY = "moviedetail";
+    private static final String MOVIE_ID_TEXT_KEY = "movieid";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +52,27 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             movieId = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
         }
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(MOVIE_DETAIL_RESPONSE_TEXT_KEY)) {
+                movieDetailData = savedInstanceState.getParcelable(MOVIE_DETAIL_RESPONSE_TEXT_KEY);
+                setupUI();
+            }
+
+            if (savedInstanceState.containsKey(MOVIE_ID_TEXT_KEY)) {
+                movieId = savedInstanceState.getInt(MOVIE_ID_TEXT_KEY);
+            }
+        } else {
+            getMovieDetails();
+        }
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        getMovieDetails();
+        outState.putInt(MOVIE_ID_TEXT_KEY, movieId);
+        outState.putParcelable(MOVIE_DETAIL_RESPONSE_TEXT_KEY, movieDetailData);
     }
 
     @Override

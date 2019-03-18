@@ -1,11 +1,14 @@
 package com.chandan.android.comicsworld.model.issues;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.chandan.android.comicsworld.model.commons.ImagesData;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class IssueDetailData {
+public class IssueDetailData implements Parcelable {
 
     private final static String Name_Tag = "name";
     private final static String Issue_Number_Tag = "issue_number";
@@ -50,6 +53,42 @@ public class IssueDetailData {
         this.imagesData = imagesData;
         this.characterCredits = characterCredits;
     }
+
+    protected IssueDetailData(Parcel in) {
+        issueName = in.readString();
+        issueNumberName = in.readString();
+        issueCoverData = in.readString();
+        issueStoreDate = in.readString();
+        issueDescription = in.readString();
+        imagesData = in.readParcelable(ImagesData.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(issueName);
+        dest.writeString(issueNumberName);
+        dest.writeString(issueCoverData);
+        dest.writeString(issueStoreDate);
+        dest.writeString(issueDescription);
+        dest.writeParcelable(imagesData, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<IssueDetailData> CREATOR = new Creator<IssueDetailData>() {
+        @Override
+        public IssueDetailData createFromParcel(Parcel in) {
+            return new IssueDetailData(in);
+        }
+
+        @Override
+        public IssueDetailData[] newArray(int size) {
+            return new IssueDetailData[size];
+        }
+    };
 
     public String getIssueName() {
         return issueName;
@@ -130,7 +169,7 @@ public class IssueDetailData {
         }
     }
 
-    public class CharacterCredit {
+    public class CharacterCredit implements Parcelable {
         private final static String Id_Tag = "id";
         private final static String Name_Tag = "name";
 
@@ -139,6 +178,43 @@ public class IssueDetailData {
 
         @SerializedName(Name_Tag)
         private String charcterCreditName;
+
+        protected CharacterCredit(Parcel in) {
+            if (in.readByte() == 0) {
+                charcterCreditId = null;
+            } else {
+                charcterCreditId = in.readInt();
+            }
+            charcterCreditName = in.readString();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            if (charcterCreditId == null) {
+                dest.writeByte((byte) 0);
+            } else {
+                dest.writeByte((byte) 1);
+                dest.writeInt(charcterCreditId);
+            }
+            dest.writeString(charcterCreditName);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public final Creator<CharacterCredit> CREATOR = new Creator<CharacterCredit>() {
+            @Override
+            public CharacterCredit createFromParcel(Parcel in) {
+                return new CharacterCredit(in);
+            }
+
+            @Override
+            public CharacterCredit[] newArray(int size) {
+                return new CharacterCredit[size];
+            }
+        };
 
         public Integer getCharcterCreditId() {
             return charcterCreditId;

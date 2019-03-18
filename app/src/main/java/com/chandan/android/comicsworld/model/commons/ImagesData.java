@@ -43,6 +43,10 @@ public class ImagesData implements Parcelable {
     @SerializedName(Original_Image_URL_Tag)
     private String originalImageUrl;
 
+    public ImagesData(String mediumImageUrl) {
+        this.mediumImageUrl = mediumImageUrl;
+    }
+
     public ImagesData(String iconImageUrl, String mediumImageUrl, String screenImageUrl, String screenLargeImageUrl, String smallImageUrl, String superImageUrl, String thumbImageUrl, String tinyImageUrl, String originalImageUrl) {
         this.iconImageUrl = iconImageUrl;
         this.mediumImageUrl = mediumImageUrl;

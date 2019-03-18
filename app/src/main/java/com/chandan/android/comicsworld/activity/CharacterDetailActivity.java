@@ -28,8 +28,10 @@ public class CharacterDetailActivity extends AppCompatActivity {
 
     private CharacterDetailData characterDetailDataList;
     private Integer characterId;
-
     private KProgressHUD progressIndicator;
+
+    private static final String CHARACTER_DETAIL_RESPONSE_TEXT_KEY = "characterdetail";
+    private static final String CHARACTER_ID_TEXT_KEY = "characterid";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +52,27 @@ public class CharacterDetailActivity extends AppCompatActivity {
         if (intent.hasExtra(Intent.EXTRA_TEXT)) {
             characterId = intent.getIntExtra(Intent.EXTRA_TEXT, 0);
         }
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(CHARACTER_DETAIL_RESPONSE_TEXT_KEY)) {
+                characterDetailDataList = savedInstanceState.getParcelable(CHARACTER_DETAIL_RESPONSE_TEXT_KEY);
+                setupUI();
+            }
+
+            if (savedInstanceState.containsKey(CHARACTER_ID_TEXT_KEY)) {
+                characterId = savedInstanceState.getInt(CHARACTER_ID_TEXT_KEY);
+            }
+        } else {
+            getCharacterDetails();
+        }
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        getCharacterDetails();
+        outState.putInt(CHARACTER_ID_TEXT_KEY, characterId);
+        outState.putParcelable(CHARACTER_DETAIL_RESPONSE_TEXT_KEY, characterDetailDataList);
     }
 
     @Override

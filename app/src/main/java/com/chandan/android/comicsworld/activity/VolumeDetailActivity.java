@@ -39,6 +39,8 @@ public class VolumeDetailActivity extends AppCompatActivity {
 
     private KProgressHUD progressIndicator;
 
+    private static final String VOLUME_DETAIL_RESPONSE_TEXT_KEY = "moviedetail";
+    private static final String VOLUME_ID_TEXT_KEY = "movieid";
     private static final String VOLUME_NAME_TEXT_KEY = "volumename";
     private static final String VOLUME_IMAGE_TEXT_KEY = "volumeimage";
 
@@ -63,13 +65,37 @@ public class VolumeDetailActivity extends AppCompatActivity {
             volumeName = intent.getStringExtra(VOLUME_NAME_TEXT_KEY);
             volumeImageUrl = intent.getStringExtra(VOLUME_IMAGE_TEXT_KEY);
         }
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(VOLUME_DETAIL_RESPONSE_TEXT_KEY)) {
+                volumeDetailData = savedInstanceState.getParcelable(VOLUME_DETAIL_RESPONSE_TEXT_KEY);
+            }
+
+            if (savedInstanceState.containsKey(VOLUME_ID_TEXT_KEY)) {
+                volumeId = savedInstanceState.getInt(VOLUME_ID_TEXT_KEY);
+            }
+
+            if (savedInstanceState.containsKey(VOLUME_NAME_TEXT_KEY)) {
+                volumeName = savedInstanceState.getString(VOLUME_NAME_TEXT_KEY);
+            }
+
+            if (savedInstanceState.containsKey(VOLUME_IMAGE_TEXT_KEY)) {
+                volumeImageUrl = savedInstanceState.getString(VOLUME_IMAGE_TEXT_KEY);
+            }
+            setupViewPager();
+        } else {
+            getVolumeDetails();
+        }
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-        getVolumeDetails();
+        outState.putInt(VOLUME_ID_TEXT_KEY, volumeId);
+        outState.putString(VOLUME_NAME_TEXT_KEY, volumeName);
+        outState.putString(VOLUME_IMAGE_TEXT_KEY, volumeImageUrl);
+        outState.putParcelable(VOLUME_DETAIL_RESPONSE_TEXT_KEY, volumeDetailData);
     }
 
     @Override

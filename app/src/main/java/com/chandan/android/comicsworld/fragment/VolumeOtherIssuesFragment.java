@@ -3,6 +3,7 @@ package com.chandan.android.comicsworld.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.chandan.android.comicsworld.R;
-import com.chandan.android.comicsworld.activity.CharacterDetailActivity;
 import com.chandan.android.comicsworld.activity.IssueDetailActivity;
 import com.chandan.android.comicsworld.adapter.VolumeOtherIssuesAdapter;
 import com.chandan.android.comicsworld.model.volumes.VolumeDetailData;
@@ -25,6 +25,8 @@ public class VolumeOtherIssuesFragment extends Fragment implements VolumeOtherIs
     private VolumeOtherIssuesAdapter mAdapter;
     private VolumeDetailData volumeDetailData;
 
+    private static final String VOLUME_DETAIL_RESPONSE_TEXT_KEY = "moviedetail1";
+
     public VolumeOtherIssuesFragment() {
         // Required empty public constructor
     }
@@ -32,8 +34,18 @@ public class VolumeOtherIssuesFragment extends Fragment implements VolumeOtherIs
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (savedInstanceState != null) {
+            volumeDetailData = savedInstanceState.getParcelable(VOLUME_DETAIL_RESPONSE_TEXT_KEY);
+        }
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_volume_other_issues, container, false);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle currentState) {
+        currentState.putParcelable(VOLUME_DETAIL_RESPONSE_TEXT_KEY, volumeDetailData);
     }
 
     @Override
