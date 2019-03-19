@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/material_card_edge_margin"
         android:elevation="@dimen/cardview_default_elevation"
-        android:orientation="vertical"
-        tools:targetApi="lollipop">
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"

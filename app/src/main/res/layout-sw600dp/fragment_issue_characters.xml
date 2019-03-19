@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="@dimen/activity_max_width"
+    android:layout_height="match_parent"
+    tools:context=".fragment.IssueCharactersFragment">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/issue_details_charcters_view"
+        android:scrollbarStyle="outsideOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/material_baseline_grid_0.5x"
+        android:clipToPadding="false"/>
+
+</FrameLayout>

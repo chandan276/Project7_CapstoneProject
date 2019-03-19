@@ -13,7 +13,6 @@ public class VolumesData implements Parcelable {
     private final static String Name_Tag = "name";
     private final static String Date_Added_Tag = "date_added";
     private final static String Issue_Number_Tag = "count_of_issues";
-    private final static String Description_Tag = "description";
     private final static String Publisher_Name_Tag = "publisher";
     private final static String Image_Data_Tag = "image";
 
