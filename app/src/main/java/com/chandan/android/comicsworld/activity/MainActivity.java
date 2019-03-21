@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity
 
         // Retrieve the SearchView and plug it into SearchManager
         MenuItem search = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) search.getActionView();
+        final SearchView searchView = (SearchView) search.getActionView();
         SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
         if (searchManager != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
                 getSearchResults(query);
                 return false;
             }
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                
+                getSearchResults(null);
                 return false;
             }
         });
