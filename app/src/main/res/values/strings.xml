@@ -82,6 +82,9 @@
     <!-- My Favorite Strings -->
     <string name="myfavorite_Menu_title">Favorites</string>
     <string name="myfavorite_drawer_title">My Favorites</string>
+    <string name="myfavorite_added">Issue added to favorite.</string>
+    <string name="myfavorite_deleted">Issue removed from favorite.</string>
+    <string name="myfavorite_error">Something went wrong, operation cannot be performed.</string>
 
     <!--Progress Indicator String-->
     <string name="progress_indicator_home_label">Please wait</string>
@@ -95,4 +98,7 @@
     the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of
     type and scrambled it to make a type specimen book.</string>
     <string name="error_data_not_available">API server is not available!\nPlease check your internet connection and try again.</string>
+
+    <!-- Widget Strings -->
+    <string name="appwidget_title_text">Favorite Issues</string>
 </resources>

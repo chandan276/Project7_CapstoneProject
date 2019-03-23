@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chandan.android.comicsworld.R;
@@ -56,13 +55,6 @@ public class VolumeOtherIssuesAdapter extends RecyclerView.Adapter<VolumeOtherIs
 
         String issueText = context.getString(R.string.issue_number) + otherIssues.getOtherIssueNumber();
         volumeOtherIssuesHolder.otherIssueSubtitleTextView.setText(issueText);
-
-        volumeOtherIssuesHolder.favoriteImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setSelected(!v.isSelected());
-            }
-        });
     }
 
     @Override
@@ -75,7 +67,6 @@ public class VolumeOtherIssuesAdapter extends RecyclerView.Adapter<VolumeOtherIs
         CardView otherIssueCardView;
         TextView otherIssueTitleTextView;
         TextView otherIssueSubtitleTextView;
-        ImageView favoriteImageView;
 
         VolumeOtherIssuesHolder(View itemView) {
             super(itemView);
@@ -83,7 +74,6 @@ public class VolumeOtherIssuesAdapter extends RecyclerView.Adapter<VolumeOtherIs
             otherIssueCardView = (CardView) itemView.findViewById(R.id.volume_issues_cardview);
             otherIssueTitleTextView = (TextView) itemView.findViewById(R.id.content_title_volume);
             otherIssueSubtitleTextView = (TextView) itemView.findViewById(R.id.content_subtitle_volume);
-            favoriteImageView = (ImageView) itemView.findViewById(R.id.favorite_image_volume);
 
             otherIssueCardView.setOnClickListener(this);
         }

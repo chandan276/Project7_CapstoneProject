@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/material_white"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+    <FrameLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView android:layout_width="match_parent"
+            android:id="@+id/widgetTitleLabel"
+            android:text="@string/appwidget_title_text"
+            android:textColor="@color/material_white"
+            android:background="@color/colorPrimary"
+            android:textSize="@dimen/widget_title_text_size"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:layout_height="wrap_content"
+            android:textStyle="bold|italic">
+        </TextView>
+    </FrameLayout>
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ListView android:id="@+id/widgetListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/material_white"
+            android:dividerHeight="@dimen/widget_listview_divider_size"
+            android:divider="@color/widget_divider_color"
+            tools:listitem="@layout/collection_widget_list_item">
+        </ListView>
+    </LinearLayout>
+</LinearLayout>

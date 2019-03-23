@@ -9,4 +9,6 @@
     <color name="subtitle_text">#696969</color>
     <color name="divider">#BDBDBD</color>
     <color name="material_white">#FFFFFF</color>
+
+    <color name="widget_divider_color">#EEEEEE</color>
 </resources>
