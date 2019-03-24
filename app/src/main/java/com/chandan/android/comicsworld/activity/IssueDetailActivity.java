@@ -1,15 +1,11 @@
 package com.chandan.android.comicsworld.activity;
 
-import android.annotation.SuppressLint;
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,11 +26,6 @@ import android.widget.Toast;
 
 import com.chandan.android.comicsworld.R;
 import com.chandan.android.comicsworld.data.FavoriteContract;
-import com.chandan.android.comicsworld.database.AppDatabase;
-import com.chandan.android.comicsworld.database.AppExecutors;
-import com.chandan.android.comicsworld.database.FavoriteIssues;
-import com.chandan.android.comicsworld.database.IssueDetailViewModel;
-import com.chandan.android.comicsworld.database.IssueDetailViewModelFactory;
 import com.chandan.android.comicsworld.fragment.IssueCharactersFragment;
 import com.chandan.android.comicsworld.fragment.IssueDetailFragment;
 import com.chandan.android.comicsworld.model.issues.IssueDetailData;

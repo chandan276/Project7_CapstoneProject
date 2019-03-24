@@ -23,7 +23,6 @@ import com.chandan.android.comicsworld.adapter.CharactersListAdapter;
 import com.chandan.android.comicsworld.adapter.ComicsListAdapter;
 import com.chandan.android.comicsworld.adapter.MoviesListAdapter;
 import com.chandan.android.comicsworld.adapter.VolumesListAdapter;
-import com.chandan.android.comicsworld.database.AppDatabase;
 import com.chandan.android.comicsworld.model.characters.CharactersData;
 import com.chandan.android.comicsworld.model.characters.CharactersDataResponse;
 import com.chandan.android.comicsworld.model.issues.IssuesData;
@@ -54,7 +53,6 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ComicsListAdapter.ComicsContentClickListener,
         VolumesListAdapter.VolumesClickListener, MoviesListAdapter.MoviesClickListener, CharactersListAdapter.CharacterContentClickListener {
 
-    private AppDatabase mDb;
     private RecyclerView mRecyclerView;
 
     private ComicsListAdapter issuesListAdapter;
@@ -89,8 +87,6 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDb = AppDatabase.getInstance(getApplicationContext());
-
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(ISSUE_RESPONSE_TEXT_KEY)) {
                 issuesDataList.clear();
@@ -121,6 +117,15 @@ public class MainActivity extends AppCompatActivity
             }
         }
         setupSideDrawer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (screenType == ScreenType.FAVORITE) {
+            issuesListAdapter.getMyFavoriteIssuesList();
+        }
     }
 
     @Override
@@ -309,7 +314,7 @@ public class MainActivity extends AppCompatActivity
     private void setRespectiveAdapter() {
         switch (screenType) {
             case ISSUES:
-                issuesListAdapter = new ComicsListAdapter(this, mDb, this);
+                issuesListAdapter = new ComicsListAdapter(this, this);
                 mRecyclerView.setAdapter(issuesListAdapter);
                 if (issuesDataList.size() == 0) {
                     getDataForIssues(null);
@@ -349,7 +354,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case FAVORITE:
-                issuesListAdapter = new ComicsListAdapter(this, mDb, this);
+                issuesListAdapter = new ComicsListAdapter(this, this);
                 mRecyclerView.setAdapter(issuesListAdapter);
                 issuesListAdapter.getMyFavoriteIssuesList();
                 break;

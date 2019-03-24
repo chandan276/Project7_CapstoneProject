@@ -43,18 +43,6 @@
             android:textColor="@color/subtitle_text"
             android:textStyle="italic"/>
 
-        <ImageView
-            android:id="@+id/favorite_image"
-            android:layout_width="@dimen/favorite_icon_width"
-            android:layout_height="@dimen/favorite_icon_height"
-            android:contentDescription="@string/home_screen_favorite_icon_desc"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/content_imageView"
-            android:layout_marginTop="@dimen/favorite_icon_top_margin"
-            android:layout_marginEnd="@dimen/favorite_icon_end_margin"
-            android:scaleType="centerCrop"
-            android:src="@drawable/favorite_image_state" />
-
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>
