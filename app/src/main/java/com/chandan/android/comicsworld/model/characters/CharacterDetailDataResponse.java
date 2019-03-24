@@ -2,8 +2,6 @@ package com.chandan.android.comicsworld.model.characters;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 public class CharacterDetailDataResponse {
     private final static String Results_Tag = "results";
 

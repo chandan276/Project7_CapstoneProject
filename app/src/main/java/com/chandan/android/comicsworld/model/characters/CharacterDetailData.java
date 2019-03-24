@@ -8,9 +8,7 @@ import com.chandan.android.comicsworld.model.commons.ImagesData;
 import com.chandan.android.comicsworld.model.commons.PublisherData;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CharacterDetailData implements Parcelable {
 

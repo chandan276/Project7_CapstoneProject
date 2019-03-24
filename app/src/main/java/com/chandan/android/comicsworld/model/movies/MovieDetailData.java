@@ -2,7 +2,6 @@ package com.chandan.android.comicsworld.model.movies;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
 import com.chandan.android.comicsworld.model.commons.ImagesData;
 import com.google.gson.annotations.SerializedName;
