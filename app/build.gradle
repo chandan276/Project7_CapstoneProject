@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'
 
 android {
     signingConfigs {
@@ -68,5 +70,6 @@ dependencies {
     implementation 'blue.aodev:material-values:1.1.1'
 
     //Firebase dependency
-    //TODO: Include Analytics and Crashlytics dependency
+    implementation 'com.google.firebase:firebase-core:16.0.8'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'
 }

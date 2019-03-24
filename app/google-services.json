@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "365560688423",
+    "firebase_url": "https://comics-world-237d3.firebaseio.com",
+    "project_id": "comics-world-237d3",
+    "storage_bucket": "comics-world-237d3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365560688423:android:6fd69bc7f96c1652",
+        "android_client_info": {
+          "package_name": "com.chandan.android.comicsworld"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "365560688423-vn1o5ak1lscphlisq9ui0dvhdg6u9ccd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT6XG2Rq7FX0aI58xsSaKpwKjS4Jyzzmk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
