@@ -1,31 +1,30 @@
 package com.chandan.android.comicsworld.activity;
 
-import android.content.ContentValues;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.chandan.android.comicsworld.R;
-import com.chandan.android.comicsworld.data.FavoriteContract;
+import com.chandan.android.comicsworld.database.AppDatabase;
+import com.chandan.android.comicsworld.database.AppExecutors;
+import com.chandan.android.comicsworld.database.FavoriteIssues;
+import com.chandan.android.comicsworld.database.IssueDetailViewModel;
+import com.chandan.android.comicsworld.database.IssueDetailViewModelFactory;
 import com.chandan.android.comicsworld.fragment.IssueCharactersFragment;
 import com.chandan.android.comicsworld.fragment.IssueDetailFragment;
 import com.chandan.android.comicsworld.model.issues.IssueDetailData;
@@ -42,8 +41,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class IssueDetailActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+public class IssueDetailActivity extends AppCompatActivity {
 
     private KProgressHUD progressIndicator;
     private IssueDetailData issueDetailData;
@@ -52,16 +50,17 @@ public class IssueDetailActivity extends AppCompatActivity implements
     private Menu menu;
     boolean isDataAvailable = false;
 
+    private AppDatabase mDb;
+
     private static final String ISSUE_DATA_TEXT_KEY = "issuedata";
     private static final String ISSUE_DETAIL_RESPONSE_TEXT_KEY = "issuedetail";
-
-    private static final String TAG = IssueDetailActivity.class.getSimpleName();
-    private static final int TASK_LOADER_ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_detail);
+
+        mDb = AppDatabase.getInstance(getApplicationContext());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -90,12 +89,6 @@ public class IssueDetailActivity extends AppCompatActivity implements
         } else {
             getIssueDetails();
         }
-
-        /*
-         Ensure a loader is initialized and active. If the loader doesn't already exist, one is
-         created, otherwise the last created loader is re-used.
-         */
-        getSupportLoaderManager().initLoader(TASK_LOADER_ID, null, this);
     }
 
     @Override
@@ -104,14 +97,6 @@ public class IssueDetailActivity extends AppCompatActivity implements
 
         outState.putParcelable(ISSUE_DATA_TEXT_KEY, issuesData);
         outState.putParcelable(ISSUE_DETAIL_RESPONSE_TEXT_KEY, issueDetailData);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // re-queries for all tasks
-        getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
     }
 
     @Override
@@ -130,114 +115,69 @@ public class IssueDetailActivity extends AppCompatActivity implements
             NavUtils.navigateUpFromSameTask(this);
         }  else if (id == R.id.action_my_favorite) {
 
-            if (isDataAvailable) {
-                removeIssueFromFavorite();
-            } else {
-                addIssueToFavorite();
-            }
+            IssueDetailViewModelFactory factory = new IssueDetailViewModelFactory(mDb, issuesData.getIssuesId());
+            final IssueDetailViewModel viewModel
+                    = ViewModelProviders.of(this, factory).get(IssueDetailViewModel.class);
+
+            viewModel.getTask().observe(this, new Observer<FavoriteIssues>() {
+                @Override
+                public void onChanged(@Nullable final FavoriteIssues favoriteIssues) {
+                    viewModel.getTask().removeObserver(this);
+                    MenuItem menuItem = menu.findItem(R.id.action_my_favorite);
+
+                    if (favoriteIssues == null) {
+
+                        final FavoriteIssues favoriteIssue = new FavoriteIssues(issuesData.getIssuesId(),
+                                issuesData.getIssuesName(),
+                                issuesData.getIssuesAddedDate(), issuesData.getImagesData().getMediumImageUrl(),
+                                issuesData.getIssuesNumber());
+
+                        menuItem.setIcon(R.drawable.ic_favorite_white_selected);
+
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDb.favoriteDao().insertTask(favoriteIssue);
+                                finish();
+                            }
+                        });
+                    } else {
+
+                        menuItem.setIcon(R.drawable.ic_favorite_white_unselected);
+
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDb.favoriteDao().deleteTask(favoriteIssues);
+                                finish();
+                            }
+                        });
+                    }
+
+                    FavoriteIssuesWidget.sendRefreshBroadcast(IssueDetailActivity.this);
+                }
+            });
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void addIssueToFavorite() {
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... params) {
-
-                ContentValues contentValues = new ContentValues();
-
-                contentValues.put(FavoriteContract.IssueEntry.COLUMN_ID, issuesData.getIssuesId());
-                contentValues.put(FavoriteContract.IssueEntry.COLUMN_NAME,
-                        issuesData.getIssuesName() == null ? "" : issuesData.getIssuesName());
-                contentValues.put(FavoriteContract.IssueEntry.COLUMN_DATE,
-                        issuesData.getIssuesAddedDate() == null ? "" : issuesData.getIssuesAddedDate());
-                contentValues.put(FavoriteContract.IssueEntry.COLUMN_IMAGE, issuesData.getComicImage());
-                contentValues.put(FavoriteContract.IssueEntry.COLUMN_NUMBER, issuesData.getIssuesNumber());
-
-                // Insert the content values via a ContentResolver
-                Uri uri = getContentResolver().insert(FavoriteContract.IssueEntry.CONTENT_URI, contentValues);
-
-                if(uri != null) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            isDataAvailable = true;
-                            MenuItem menuItem = menu.findItem(R.id.action_my_favorite);
-                            menuItem.setIcon(R.drawable.ic_favorite_white_selected);
-
-                            // this will send the broadcast to update the appwidget
-                            FavoriteIssuesWidget.sendRefreshBroadcast(IssueDetailActivity.this);
-                        }
-                    });
-                }
-
-                return null;
-
-            }
-        }.execute();
-    }
-
-    private void removeIssueFromFavorite() {
-        // Build appropriate uri with String row id appended
-        String stringId = Integer.toString(issuesData.getIssuesId());
-        Uri uri = FavoriteContract.IssueEntry.CONTENT_URI;
-        uri = uri.buildUpon().appendPath(stringId).build();
-
-        // COMPLETED (2) Delete a single row of data using a ContentResolver
-        getContentResolver().delete(uri, null, null);
-
-        // COMPLETED (3) Restart the loader to re-query for all tasks after a deletion
-        getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, IssueDetailActivity.this);
-
-        isDataAvailable = false;
-        MenuItem menuItem = menu.findItem(R.id.action_my_favorite);
-        menuItem.setIcon(R.drawable.ic_favorite_white_unselected);
-
-        FavoriteIssuesWidget.sendRefreshBroadcast(IssueDetailActivity.this);
-    }
-
     private void loadFavoriteButton() {
-        new AsyncTask<Void, Void, Void>() {
+        IssueDetailViewModelFactory factory = new IssueDetailViewModelFactory(mDb, issuesData.getIssuesId());
+        final IssueDetailViewModel viewModel
+                = ViewModelProviders.of(this, factory).get(IssueDetailViewModel.class);
+
+        viewModel.getTask().observe(this, new Observer<FavoriteIssues>() {
             @Override
-            protected Void doInBackground(Void... params) {
-
-                Cursor cursor = null;
-
-                try {
-                    cursor = getContentResolver().query(FavoriteContract.IssueEntry.CONTENT_URI,
-                            null,
-                            null,
-                            null,
-                            FavoriteContract.IssueEntry.COLUMN_ID);
+            public void onChanged(@Nullable FavoriteIssues favoriteIssues) {
+                viewModel.getTask().removeObserver(this);
+                MenuItem menuItem = menu.findItem(R.id.action_my_favorite);
+                if (favoriteIssues == null) {
+                    menuItem.setIcon(R.drawable.ic_favorite_white_unselected);
+                } else {
+                    menuItem.setIcon(R.drawable.ic_favorite_white_selected);
                 }
-                catch (Exception e) {
-
-                }
-
-                if (cursor != null) {
-                    while(cursor.moveToNext()) {
-                        int issueId = cursor.getInt(0);
-                        if (issueId == issuesData.getIssuesId()) {
-                            isDataAvailable = true;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    MenuItem menuItem = menu.findItem(R.id.action_my_favorite);
-                                    menuItem.setIcon(R.drawable.ic_favorite_white_selected);
-                                }
-                            });
-                        }
-                    }
-                }
-
-                if (cursor != null) {
-                    cursor.close();
-                }
-
-                return null;
             }
-        }.execute();
+        });
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -340,81 +280,5 @@ public class IssueDetailActivity extends AppCompatActivity implements
 
     public void hideProgressIndicator() {
         progressIndicator.dismiss();
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, final Bundle loaderArgs) {
-
-        return new AsyncTaskLoader<Cursor>(this) {
-
-            // Initialize a Cursor, this will hold all the task data
-            Cursor mTaskData = null;
-
-            // onStartLoading() is called when a loader first starts loading data
-            @Override
-            protected void onStartLoading() {
-                if (mTaskData != null) {
-                    // Delivers any previously loaded data immediately
-                    deliverResult(mTaskData);
-                } else {
-                    // Force a new load
-                    forceLoad();
-                }
-            }
-
-            // loadInBackground() performs asynchronous loading of data
-            @Override
-            public Cursor loadInBackground() {
-                // Will implement to load data
-
-                // Query and load all task data in the background; sort by priority
-                // [Hint] use a try/catch block to catch any errors in loading data
-
-                try {
-                    return getContentResolver().query(FavoriteContract.IssueEntry.CONTENT_URI,
-                            null,
-                            null,
-                            null,
-                            FavoriteContract.IssueEntry.COLUMN_ID);
-
-                } catch (Exception e) {
-                    Log.e(TAG, "Failed to asynchronously load data.");
-                    e.printStackTrace();
-                    return null;
-                }
-            }
-
-            // deliverResult sends the result of the load, a Cursor, to the registered listener
-            public void deliverResult(Cursor data) {
-                mTaskData = data;
-                super.deliverResult(data);
-            }
-        };
-
-    }
-
-
-    /**
-     * Called when a previously created loader has finished its load.
-     *
-     * @param loader The Loader that has finished.
-     * @param data The data generated by the Loader.
-     */
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // Update the data that the adapter uses to create ViewHolder
-    }
-
-
-    /**
-     * Called when a previously created loader is being reset, and thus
-     * making its data unavailable.
-     * onLoaderReset removes any references this activity had to the loader's data.
-     *
-     * @param loader The Loader that is being reset.
-     */
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
     }
 }

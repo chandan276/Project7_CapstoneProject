@@ -10,6 +10,7 @@ import android.widget.RemoteViewsService;
 
 import com.chandan.android.comicsworld.R;
 import com.chandan.android.comicsworld.data.FavoriteContract;
+import com.chandan.android.comicsworld.database.AppDatabase;
 import com.chandan.android.comicsworld.utilities.DateUtils;
 
 public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
@@ -40,6 +41,9 @@ public class WidgetRemoteViewsFactory implements RemoteViewsService.RemoteViewsF
                 null,
                 null,
                 FavoriteContract.IssueEntry.COLUMN_ID);
+
+        AppDatabase database = AppDatabase.getInstance(mContext);
+        mCursor = database.favoriteDao().getCursorAll();
 
         Binder.restoreCallingIdentity(identityToken);
     }

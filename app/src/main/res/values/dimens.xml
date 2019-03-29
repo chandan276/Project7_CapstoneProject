@@ -28,6 +28,7 @@
     <dimen name="service_views_padding">16dp</dimen>
 
     <dimen name="expandedTitleMarginStart">48dp</dimen>
+    <dimen name="activity_max_width">500dp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information

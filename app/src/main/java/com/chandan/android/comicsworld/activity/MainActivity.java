@@ -32,6 +32,7 @@ import com.chandan.android.comicsworld.model.movies.MoviesDataResponse;
 import com.chandan.android.comicsworld.model.volumes.VolumesData;
 import com.chandan.android.comicsworld.model.volumes.VolumesDataResponse;
 import com.chandan.android.comicsworld.utilities.NetworkUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
@@ -64,6 +65,8 @@ public class MainActivity extends AppCompatActivity
     ScreenType screenType = ScreenType.ISSUES;
     private String currentScreenTitle = "Issues";
 
+    private static FirebaseAnalytics firebaseAnalytics;
+
     private boolean mTwoPane;
 
     private List<IssuesData> issuesDataList = new ArrayList<>();
@@ -86,6 +89,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(ISSUE_RESPONSE_TEXT_KEY)) {
@@ -265,6 +270,9 @@ public class MainActivity extends AppCompatActivity
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawer.closeDrawer(GravityCompat.START);
         }
+
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, currentScreenTitle);
 
         return true;
     }
